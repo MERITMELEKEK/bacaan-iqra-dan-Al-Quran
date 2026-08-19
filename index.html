@@ -143,7 +143,7 @@
             background: var(--bg); z-index: 2000; padding: 30px 20px; box-sizing: border-box; overflow-y: auto; 
         }
 
-        input[type="text"], input[type="url"], input[type="date"], input[type="number"], select { 
+        input[type="text"], input[type="url"], input[type="date"], input[type="number"], input[type="password"], select { 
             width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid #cbd5e1; 
             margin-bottom: 14px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; 
             background: #fff; outline: none;
@@ -315,7 +315,7 @@
 
 <div class="top-bar">
     <h2>SK MELEKEK</h2>
-    <p>Sistem Pengurusan SINAR</p>
+    <p>Sistem Pengurusan Pintar v24.2</p>
 </div>
 
 <div class="search-container">
@@ -482,6 +482,11 @@
                 <button class="btn-aksi" style="background:var(--danger);" onclick="prosesPukal(false, 5, this)">-5 KESALAHAN</button>
                 <button class="btn-aksi" style="background:var(--danger);" onclick="prosesPukal(false, 10, this)">-10 KESALAHAN</button>
                 <button class="btn-aksi" style="background:var(--danger);" onclick="prosesPukal(false, 20, this)">-20 KESALAHAN</button>
+            </div>
+
+            <label style="font-weight:bold; font-size:0.85rem; display:block; margin-top:16px; color: var(--gray-600);">4. Tetapan Semula (Reset Pukal)</label>
+            <div style="margin-top:6px;">
+                <button class="btn-aksi" style="background:var(--dark); width:100%; border:1px solid #cbd5e1;" onclick="resetPukalBerpassword(this)">🔄 RESET MERIT PUKAL (GURU)</button>
             </div>
         </div>
     </div>
@@ -849,6 +854,38 @@
             }
             await kemaskiniRanking(thn);
             alert(`Berjaya dikemaskini secara pukal!`);
+        }
+    }
+
+    async function resetPukalBerpassword(elemenButang) {
+        cetusGegar(elemenButang);
+        const pwd = prompt("Sila masukkan kata laluan untuk reset markah merit:");
+        if (pwd === null) return; 
+        if (pwd !== "mba0024") {
+            alert("Kata laluan salah! Akses ditolak.");
+            return;
+        }
+
+        const thn = document.getElementById('pukalTahun').value;
+        const kls = document.getElementById('pukalKelas').value;
+        let senaraiTarget = databaseMurid.filter(m => m.tahun == thn && m.namaKelas == kls);
+        if (senaraiTarget.length === 0) return alert("Tiada murid dijumpai dalam kelas ini.");
+
+        const inputNilai = prompt(`Pengesahan Kata Laluan Berjaya!\nMasukkan nilai markah merit baru untuk SEMUA murid kelas ${thn} ${kls}:`, "0");
+        if (inputNilai === null) return; 
+        
+        const nilaiBaru = parseInt(inputNilai, 10);
+        if (isNaN(nilaiBaru)) {
+            alert("Nilai tidak sah. Sila masukkan nombor sahaja.");
+            return;
+        }
+
+        if (confirm(`PENGESAHAN AKHIR:\nAdakah anda pasti mahu menetapkan semula (RESET) markah merit SEMUA murid kelas ${thn} ${kls} kepada ${nilaiBaru}?`)) {
+            for (let murid of senaraiTarget) {
+                await db.ref('pelajar/' + murid.uid + '/markah').set(nilaiBaru);
+            }
+            await kemaskiniRanking(thn);
+            alert(`Markah merit bagi semua murid kelas ${thn} ${kls} telah berjaya diset semula kepada ${nilaiBaru}!`);
         }
     }
 
