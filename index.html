@@ -1066,10 +1066,59 @@
         </div>`;
         const html = filtered.map(m=>{
             const my = logs.filter(x=>x.uid===m.uid);
-            const counters={}; let totalT=0, totalN=0;
-            my.forEach(x=>{ const k=x.guruNama||'PENTADBIR SISTEM'; counters[k]=(counters[k]||0)+1; totalT+=Number(x.perubahan||0); totalN++; });
-            const rows = Object.entries(counters).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;"><span>👨‍🏫 ${escapeHtml(name)}</span><b>${n} kali</b></div>`).join('');
-            return `<div class="murid-item"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><b>${escapeHtml(m.nama)}</b><br><small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${m.markah||0}</span></div><div style="margin-top:10px;font-size:.8rem"><b>${totalN}</b> transaksi • perubahan bersih <b>${totalT>=0?'+':''}${totalT}</b></div><div style="margin-top:8px">${rows || '<small style="color:var(--gray-600)">Belum ada rekod guru.</small>'}</div></div>`;
+            const statsGuru = {}; 
+            let totalT = 0, totalN = 0, totalPositif = 0, totalNegatif = 0;
+
+            my.forEach(x => { 
+                const k = x.guruNama || 'PENTADBIR SISTEM'; 
+                if(!statsGuru[k]) statsGuru[k] = { transaksi: 0, tambah: 0, tolak: 0, bersih: 0 };
+                
+                const val = Number(x.perubahan || 0);
+                statsGuru[k].transaksi++;
+                statsGuru[k].bersih += val;
+
+                if (val > 0) {
+                    statsGuru[k].tambah += val;
+                    totalPositif += val;
+                } else if (val < 0) {
+                    statsGuru[k].tolak += Math.abs(val);
+                    totalNegatif += Math.abs(val);
+                }
+
+                totalT += val; 
+                totalN++; 
+            });
+
+            const rows = Object.entries(statsGuru).sort((a,b)=>b[1].transaksi - a[1].transaksi).map(([name, s])=>`
+                <div style="padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>👨‍🏫 <b>${escapeHtml(name)}</b></span>
+                        <small style="color:var(--gray-600);">${s.transaksi} kali kemaskini</small>
+                    </div>
+                    <div style="display:flex; gap:12px; margin-top:4px; font-size:0.78rem;">
+                        <span style="color:var(--success); font-weight:700;">+${s.tambah} Ditambah</span>
+                        <span style="color:var(--danger); font-weight:700;">-${s.tolak} Ditolak</span>
+                        <span style="color:var(--gray-800); font-weight:700;">(Bersih: ${s.bersih >= 0 ? '+' : ''}${s.bersih})</span>
+                    </div>
+                </div>
+            `).join('');
+
+            return `<div class="murid-item">
+                <div style="display:flex; justify-content:space-between; gap:10px; align-items:center">
+                    <div>
+                        <b>${escapeHtml(m.nama)}</b><br>
+                        <small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small>
+                    </div>
+                    <span class="badge-skor">${m.markah||0}</span>
+                </div>
+                <div style="margin-top:10px; font-size:.8rem; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <b>${totalN}</b> Transaksi Keseluruhan • 
+                    <span style="color:var(--success); font-weight:700;">+${totalPositif} Ditambah</span> • 
+                    <span style="color:var(--danger); font-weight:700;">-${totalNegatif} Ditolak</span><br>
+                    <small style="color:var(--gray-600)">Perubahan Bersih: <b>${totalT>=0?'+':''}${totalT}</b></small>
+                </div>
+                <div style="margin-top:8px">${rows || '<small style="color:var(--gray-600)">Belum ada rekod transaksi guru.</small>'}</div>
+            </div>`;
         }).join('');
         c.innerHTML = html || '<div class="murid-item">Tiada murid ditemui.</div>';
     }
