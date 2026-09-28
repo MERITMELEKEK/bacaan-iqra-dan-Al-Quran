@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistem Pintar SINAR</title>
+    <title>Sistem Pintar SK Melekek v25.0 • Guru & Audit Merit</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -35,6 +35,7 @@
             overflow-x: hidden; 
         }
 
+        /* Top Bar Header Moden */
         .top-bar { 
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%); 
             color: white; 
@@ -45,40 +46,108 @@
             position: relative;
         }
 
-        .top-bar h2 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.5px; }
-        .top-bar p { margin: 4px 0 0 0; opacity: 0.85; font-size: 0.85rem; font-weight: 500; }
+        .top-bar h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
 
-        .search-container { margin: -25px 20px 20px 20px; position: relative; z-index: 101; }
+        .top-bar p {
+            margin: 4px 0 0 0;
+            opacity: 0.85;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Carian Dashboard */
+        .search-container { 
+            margin: -25px 20px 20px 20px; 
+            position: relative; 
+            z-index: 101; 
+        }
 
         #cariUtama, .input-carian { 
-            width: 100%; padding: 16px 22px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.8); 
-            background: #ffffff; box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08); font-size: 0.95rem; 
-            outline: none; box-sizing: border-box; transition: all 0.2s ease; font-family: inherit;
+            width: 100%; 
+            padding: 16px 22px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            background: #ffffff;
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08); 
+            font-size: 0.95rem; 
+            outline: none; 
+            box-sizing: border-box; 
+            transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         #cariUtama:focus, .input-carian:focus {
-            box-shadow: 0 15px 30px -5px rgba(67, 56, 202, 0.15); border-color: var(--primary);
+            box-shadow: 0 15px 30px -5px rgba(67, 56, 202, 0.15);
+            border-color: var(--primary);
         }
 
         .content { padding: 0 20px 100px 20px; }
 
+        /* Tajuk Seksyen */
         .section-title { 
-            font-size: 0.75rem; font-weight: 800; color: var(--gray-600); margin: 24px 0 12px 4px; 
-            text-transform: uppercase; letter-spacing: 1.2px; display: flex; align-items: center; gap: 8px;
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            color: var(--gray-600); 
+            margin: 24px 0 12px 4px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.2px; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .section-title::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
 
-        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        /* Kad Menu Utama & Grid */
+        .grid-menu { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+        }
 
         .card-btn { 
-            background: var(--card); padding: 18px 14px; border-radius: 20px; text-align: center; 
-            font-weight: 700; font-size: 0.85rem; color: var(--gray-800); box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
-            cursor: pointer; border: 1px solid #f1f5f9; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; user-select: none;
+            background: var(--card); 
+            padding: 18px 14px; 
+            border-radius: 20px; 
+            text-align: center; 
+            font-weight: 700; 
+            font-size: 0.85rem;
+            color: var(--gray-800); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+            cursor: pointer; 
+            border: 1px solid #f1f5f9; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            user-select: none;
         }
-        .card-btn:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .card-full { grid-column: span 2; flex-direction: row; justify-content: center; padding: 16px 20px; }
 
+        .card-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .card-full { 
+            grid-column: span 2; 
+            flex-direction: row;
+            justify-content: center;
+            padding: 16px 20px;
+        }
+
+        /* Warna Kad Khas */
         .btn-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; border: none; }
         .btn-teal { background: linear-gradient(135deg, #0d9488, #0f766e); color: white; border: none; }
         .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; }
@@ -91,36 +160,77 @@
         .view-section { display: none; }
         
         .murid-item { 
-            background: var(--card); padding: 18px; border-radius: 20px; margin-bottom: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; 
+            background: var(--card); 
+            padding: 18px; 
+            border-radius: 20px; 
+            margin-bottom: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
+            border: 1px solid #f1f5f9; 
         }
 
         .btn-aksi { 
-            padding: 12px 16px; border: none; border-radius: 14px; color: white; font-weight: 700; 
-            flex: 1; cursor: pointer; font-size: 0.85rem; transition: all 0.15s ease; font-family: inherit;
+            padding: 12px 16px; 
+            border: none; 
+            border-radius: 14px; 
+            color: white; 
+            font-weight: 700; 
+            flex: 1; 
+            cursor: pointer; 
+            font-size: 0.85rem; 
+            transition: all 0.15s ease; 
+            font-family: inherit;
         }
+
         .btn-aksi:active { transform: scale(0.95); }
 
-        .badge-skor { background: var(--gray-800); color: white; padding: 6px 14px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; }
-        
+        .badge-skor { 
+            background: var(--gray-800); 
+            color: white; 
+            padding: 6px 14px; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            font-size: 0.9rem;
+        }
+
         /* Badges Bacaan Iqra / Quran */
         .badge-bacaan { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: inline-block; margin-top: 4px; }
         .badge-iqra { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
         .badge-quran { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
+        /* Overlay Global & Modal */
         .overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px); z-index: 5000; 
-            align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(15, 23, 42, 0.65); 
+            backdrop-filter: blur(8px); 
+            z-index: 5000; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            box-sizing: border-box; 
         }
 
         .modal { 
-            background: white; width: 100%; max-width: 420px; border-radius: 28px; padding: 25px; 
-            text-align: center; animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); max-height: 90vh; 
-            overflow-y: auto; box-sizing: border-box; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: white; 
+            width: 100%; 
+            max-width: 420px; 
+            border-radius: 28px; 
+            padding: 25px; 
+            text-align: center; 
+            animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            box-sizing: border-box; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { 
+            from { transform: translateY(30px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -139,22 +249,45 @@
         .score-big { font-size: 2.8rem; font-weight: 800; color: var(--primary); margin: 8px 0; }
 
         #formView { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--bg); z-index: 2000; padding: 30px 20px; box-sizing: border-box; overflow-y: auto; 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: var(--bg); 
+            z-index: 2000; 
+            padding: 30px 20px; 
+            box-sizing: border-box; 
+            overflow-y: auto; 
         }
 
-        input[type="text"], input[type="url"], input[type="date"], input[type="number"], input[type="password"], select { 
-            width: 100%; padding: 14px 18px; border-radius: 16px; border: 1px solid #cbd5e1; 
-            margin-bottom: 14px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; 
-            background: #fff; outline: none;
+        input[type="text"], input[type="url"], input[type="date"], input[type="number"], select { 
+            width: 100%; 
+            padding: 14px 18px; 
+            border-radius: 16px; 
+            border: 1px solid #cbd5e1; 
+            margin-bottom: 14px; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            font-size: 0.9rem; 
+            background: #fff;
+            outline: none;
         }
 
-        input:focus, select:focus { border-color: var(--primary); }
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
 
         .status-nfc-aktif { 
-            background: #ecfdf5; color: var(--success); padding: 10px; text-align: center; 
-            border-radius: 14px; font-size: 0.78rem; font-weight: 700; margin-bottom: 15px; 
-            border: 1px dashed var(--success); display: none; 
+            background: #ecfdf5; 
+            color: var(--success); 
+            padding: 10px; 
+            text-align: center; 
+            border-radius: 14px; 
+            font-size: 0.78rem; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            border: 1px dashed var(--success); 
+            display: none; 
         }
 
         /* Cetakan Skrin Khas */
@@ -183,8 +316,18 @@
 
         @media print {
             body, html { background: #fff !important; color: #000 !important; font-size: 12pt; }
-            .top-bar, .search-container, .content, #menuFolder, .view-section, #formView, .overlay, .status-nfc-aktif, button, input, select { display: none !important; }
-            #cetakBorangKawasan { display: block !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
+            .top-bar, .search-container, .content, #menuFolder, .view-section, #formView, .overlay, .status-nfc-aktif, button, input, select { 
+                display: none !important; 
+            }
+            #cetakBorangKawasan { 
+                display: block !important; 
+                position: absolute !important;
+                top: 0 !important; left: 0 !important;
+                width: 100% !important;
+                border: none !important;
+                padding: 0 !important; margin: 0 !important;
+                box-shadow: none !important;
+            }
             .print-table { width: 100% !important; margin-top: 20px !important; }
             .print-table th { background-color: #eaeaea !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .print-footer-signature { display: flex !important; }
@@ -193,7 +336,7 @@
 </head>
 <body>
 
-<!-- POPUP IMBASAN KAD NFC (DENGAN BACAAN ALQURAN & IQRA) -->
+<!-- POPUP IMBASAN KAD NFC GLOBAL (DENGAN KEMASKINI MERIT & BACAAN ALQURAN/IQRA) -->
 <div id="popupNfcGlobal" class="overlay">
     <div class="modal" id="modalNfc">
         <div id="gNfcIcon" style="font-size: 40px; margin-bottom: 4px;">✅</div>
@@ -292,6 +435,7 @@
     </div>
 </div>
 
+<!-- ==================== MODAL KERJA RUMAH ==================== -->
 <div id="formKerjaRumah" class="overlay" style="z-index: 6000;">
     <div class="modal" id="modalKerjaRumah">
         <div id="krIconSubjek" style="font-size: 45px; margin-bottom: 5px;">📖</div>
@@ -315,7 +459,10 @@
 
 <div class="top-bar">
     <h2>SK MELEKEK</h2>
-    <p>Sistem Pengurusan Pintar v24.2</p>
+    <p>Sistem Pengurusan Pintar v25.0 • Pautan Guru & Audit Merit</p>
+    <div id="guruNameBanner" style="display:none; margin:16px auto 0; max-width:520px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); border-radius:16px; padding:10px 14px; font-size:.82rem; font-weight:800; backdrop-filter:blur(4px);">
+        👨‍🏫 <span id="guruNameText">Guru</span> <span style="opacity:.75;">• Pautan Peribadi</span>
+    </div>
 </div>
 
 <div class="search-container">
@@ -330,7 +477,6 @@
             <div id="btnAktifNfc" class="card-btn card-full btn-purple" onclick="aktifkanNfcLatarBelakang()">
                 <span>📡</span> <span>AKTIFKAN IMBASAN KAD NFC</span>
             </div>
-            <!-- MENU REKOD BACAAN DITAMBAH DI SINI -->
             <div class="card-btn btn-teal" onclick="bukaBacaan()">
                 <span style="font-size: 1.4rem;">📖</span> <span>REKOD BACAAN</span>
             </div>
@@ -343,11 +489,17 @@
             <div class="card-btn btn-orange" onclick="bukaRMT()">
                 <span style="font-size: 1.4rem;">🍲</span> <span>KEHADIRAN RMT</span>
             </div>
-            <div class="card-btn card-full btn-primary-light" onclick="bukaPukal()">
-                <span>📦</span> <span>KEMASKINI MERIT PUKAL</span>
+            <div class="card-btn btn-primary-light" onclick="bukaPukal()">
+                <span style="font-size: 1.4rem;">📦</span> <span>MERIT PUKAL</span>
             </div>
             <div class="card-btn card-full btn-red" onclick="bukaDisiplin()">
                 <span>🚨</span> <span>REKOD SALAH LAKU / DISIPLIN</span>
+            </div>
+            <div class="card-btn btn-purple" onclick="bukaMeritCepat()">
+                <span style="font-size:1.4rem;">⚡</span> <span>MERIT CEPAT</span>
+            </div>
+            <div class="card-btn btn-blue" onclick="bukaStatistikMerit()">
+                <span style="font-size:1.4rem;">📈</span> <span>STATISTIK MERIT</span>
             </div>
         </div>
         
@@ -362,6 +514,11 @@
         <div class="section-title">Pengurusan</div>
         <div class="card-btn card-full" style="background: #ffffff; border: 2px dashed #cbd5e1; color: var(--gray-800);" onclick="bukaDaftar()">
             <span>➕</span> <span>DAFTAR MURID BARU</span>
+        </div>
+        <div id="adminGuruMenu" style="display:none; margin-top:12px;">
+            <div class="card-btn card-full" style="background:#fff7ed; border:2px dashed #fdba74; color:#9a3412;" onclick="bukaPengurusanGuru()">
+                <span>👨‍🏫</span> <span>PENGURUSAN GURU & PAUTAN</span>
+            </div>
         </div>
     </div>
 
@@ -399,17 +556,20 @@
             <h3 id="krTajuk" style="margin:0; color:var(--primary)">PAPAN KERJA RUMAH</h3>
         </div>
         
+        <!-- Bahagian Pilih Kelas Kerja Rumah -->
         <div id="pilihKelasKRContainer">
             <div class="section-title" style="margin-top:0;">Pilih Kelas Murid</div>
             <div id="gridKelasKR" class="grid-menu"></div>
         </div>
 
+        <!-- Bahagian Senarai Subjek -->
         <div id="subjekKRWrapper" style="display:none;">
             <div class="petunjuk-kr">
                 <div><span class="dot-kr merah"></span> Ada Kerja Rumah</div>
                 <div><span class="dot-kr hijau"></span> Tiada Kerja Rumah</div>
             </div>
             <p style="font-size:0.75rem; color:var(--gray-600); text-align:center; margin-top:-5px; margin-bottom:15px;">*Pautan kerja rumah akan di-reset secara automatik selepas 7 hari.</p>
+
             <div id="gridSubjekContainer" class="grid-subjek"></div>
         </div>
     </div>
@@ -484,9 +644,12 @@
                 <button class="btn-aksi" style="background:var(--danger);" onclick="prosesPukal(false, 20, this)">-20 KESALAHAN</button>
             </div>
 
-            <label style="font-weight:bold; font-size:0.85rem; display:block; margin-top:16px; color: var(--gray-600);">4. Tetapan Semula (Reset Pukal)</label>
-            <div style="margin-top:6px;">
-                <button class="btn-aksi" style="background:var(--dark); width:100%; border:1px solid #cbd5e1;" onclick="resetPukalBerpassword(this)">🔄 RESET MERIT PUKAL (GURU)</button>
+            <!-- RESET MERIT PUKAL (KHAS UNTUK PAPARAN ADMIN/PENTADBIR) -->
+            <div id="adminResetPukalBox" style="display:none;">
+                <label style="font-weight:bold; font-size:0.85rem; display:block; margin-top:16px; color: var(--gray-600);">4. Tetapan Semula (Reset Merit Pukal)</label>
+                <div style="margin-top:6px;">
+                    <button class="btn-aksi" style="background:var(--dark); width:100%; border:1px solid #cbd5e1;" onclick="resetPukalBerpassword(this)">🔄 RESET MERIT PUKAL (ADMIN)</button>
+                </div>
             </div>
         </div>
     </div>
@@ -507,6 +670,53 @@
 
         <div class="section-title">Senarai Pelanggaran Terkini</div>
         <div id="senaraiKesalahanContainer"></div>
+    </div>
+
+    <div id="meritCepatView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="hentiMeritCepat()">⬅️</button>
+            <h3 style="margin:0; color:var(--purple);">MERIT CEPAT</h3>
+        </div>
+        <div style="background:linear-gradient(135deg,#ede9fe,#faf5ff); padding:20px; border-radius:24px; border:1px solid #ddd6fe; margin-bottom:15px;">
+            <div style="font-size:.8rem; color:#6d28d9; font-weight:800; margin-bottom:8px;">MODE IMBASAN BERTERUSAN</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="cepatModeTambah" class="btn-aksi" style="background:var(--success);" onclick="setModeMeritCepat(1)">+ TAMBAH</button>
+                <button id="cepatModeTolak" class="btn-aksi" style="background:#cbd5e1; color:#334155;" onclick="setModeMeritCepat(-1)">− TOLAK</button>
+            </div>
+            <input id="jumlahMeritCepat" type="number" min="1" step="1" value="5" inputmode="numeric" placeholder="Jumlah merit" style="width:100%; margin:12px 0 10px; padding:16px 18px; border-radius:16px; border:1px solid #c4b5fd; box-sizing:border-box; font-size:1.3rem; font-weight:800; text-align:center;">
+            <button id="btnMulaMeritCepat" class="btn-aksi" style="background:var(--purple); width:100%;" onclick="mulaMeritCepat()">📡 MULA IMBASAN BERTERUSAN</button>
+            <div id="statusMeritCepat" style="margin-top:12px; padding:12px; background:#fff; border-radius:14px; text-align:center; font-size:.8rem; font-weight:800; color:#475569;">Belum bermula.</div>
+        </div>
+        <div id="hasilMeritCepat" style="background:#fff; padding:20px; border-radius:24px; border:1px solid #e2e8f0; text-align:center; min-height:130px;">
+            <div style="font-size:2.5rem;">🎫</div>
+            <div style="font-weight:800;">Sila scan kad murid</div>
+            <div style="font-size:.78rem; color:var(--gray-600); margin-top:6px;">Skrin kekal aktif selagi mod ini berjalan.</div>
+        </div>
+    </div>
+
+    <div id="statistikMeritView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
+            <h3 style="margin:0; color:var(--primary);">STATISTIK MERIT</h3>
+        </div>
+        <input type="text" id="cariStatMerit" class="input-carian" placeholder="🔍 Cari nama murid..." oninput="renderStatistikMerit()">
+        <div id="statistikMeritRingkas" style="margin:12px 0;"></div>
+        <div id="statistikMeritContainer"></div>
+    </div>
+
+    <div id="pengurusanGuruView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
+            <h3 style="margin:0; color:#9a3412;">PENGURUSAN GURU</h3>
+        </div>
+        <div style="background:white; padding:20px; border-radius:24px; border:1px solid #fed7aa; margin-bottom:15px;">
+            <div style="font-weight:800; margin-bottom:5px;">Daftar Guru Baharu</div>
+            <div style="font-size:.78rem; color:var(--gray-600); margin-bottom:12px;">Setiap guru akan menerima pautan peribadi. Guru tidak perlu login.</div>
+            <input type="text" id="guruNamaInput" placeholder="NAMA GURU">
+            <input type="text" id="guruIdInput" placeholder="ID RINGKAS / KOD GURU (pilihan)">
+            <button class="btn-aksi" style="background:#ea580c; width:100%;" onclick="daftarGuruBaru()">➕ DAFTAR & JANA PAUTAN</button>
+        </div>
+        <div id="senaraiGuruContainer"></div>
     </div>
 
     <div id="cetakView" class="view-section">
@@ -639,6 +849,21 @@
     let curKrTahun = null, curKrKelas = null;
     let nfcReaderInstance = null;
 
+    // ==================== GURU / AUDIT MERIT ====================
+    const URL_PARAMS = new URLSearchParams(window.location.search);
+    const GURU_TOKEN = URL_PARAMS.get('guru') || '';
+    const ADMIN_KEY = URL_PARAMS.get('admin') || '';
+    const MASTER_ADMIN_KEY = 'TUKAR-KATA-LALUAN-ADMIN-SEBELUM-PUBLISH';
+    let currentGuru = null;
+    let guruList = {};
+    let databaseLogMerit = [];
+    let meritCepatAktif = false;
+    let meritCepatTanda = 1;
+    let meritCepatWakeLock = null;
+    let lastQuickScanUid = '';
+    let lastQuickScanTime = 0;
+
+    // --- SENARAI SUBJEK SEKOLAH KEBANGSAAN ---
     const SENARAI_SUBJEK = [
         { id: 'BM', nama: 'Bahasa Melayu', ikon: '📖' },
         { id: 'BI', nama: 'Bahasa Inggeris', ikon: '🔤' },
@@ -686,12 +911,239 @@
         await db.ref('ranking/T' + tahun).set(top3);
     }
 
-    async function tukarMarkah(uid, pts) {
+    async function tukarMarkah(uid, pts, kaedah = 'MANUAL') {
         const m = databaseMurid.find(x => x.uid === uid);
-        if(!m) return;
-        await db.ref('pelajar/' + uid + '/markah').transaction(c => (c || 0) + pts);
+        if(!m) return false;
+        const actor = currentGuru || { token:'ADMIN', nama:'PENTADBIR SISTEM', id:'ADMIN' };
+        const sebelum = Number(m.markah || 0);
+        await db.ref('pelajar/' + uid + '/markah').transaction(c => (c || 0) + Number(pts));
+        const selepas = sebelum + Number(pts);
+        await db.ref('logMerit').push({
+            uid: uid, nama: m.nama, tahun: m.tahun, kelas: m.namaKelas,
+            guruToken: actor.token || 'ADMIN', guruId: actor.id || 'ADMIN', guruNama: actor.nama || 'PENTADBIR SISTEM',
+            perubahan: Number(pts), sebelum: sebelum, selepas: selepas,
+            kaedah: kaedah, tarikh: getTarikhHariIni(), timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
         await kemaskiniRanking(m.tahun);
+        return true;
     }
+
+    function janaTokenUnik() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+        let out = '';
+        for(let i=0;i<28;i++) out += chars.charAt(Math.floor(Math.random()*chars.length));
+        return out;
+    }
+
+    function escapeHtml(v) {
+        return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function pautanGuru(token) {
+        return window.location.origin + window.location.pathname + '?guru=' + encodeURIComponent(token);
+    }
+
+    async function muatKonfigurasiAkses() {
+        const teacherSnap = await db.ref('guru').once('value');
+        guruList = teacherSnap.val() || {};
+        if(GURU_TOKEN) {
+            const guru = guruList[GURU_TOKEN];
+            if(!guru || guru.aktif === false) {
+                document.body.innerHTML = `<div style="font-family:Arial;padding:40px;text-align:center"><h2>❌ Pautan guru tidak sah</h2><p>Pautan ini mungkin belum didaftarkan atau telah dinyahaktifkan.</p><p>Sila hubungi pentadbir sistem.</p></div>`;
+                throw new Error('Guru token tidak sah');
+            }
+            currentGuru = { token:GURU_TOKEN, ...guru };
+            const banner = document.getElementById('guruNameBanner');
+            const name = document.getElementById('guruNameText');
+            banner.style.display = 'block'; name.textContent = currentGuru.nama || 'Guru';
+            document.getElementById('adminResetPukalBox').style.display = 'none';
+        } else {
+            if(ADMIN_KEY !== MASTER_ADMIN_KEY) {
+            }
+            document.getElementById('adminGuruMenu').style.display = 'block';
+            document.getElementById('adminResetPukalBox').style.display = 'block';
+        }
+        renderSenaraiGuru();
+    }
+
+    function getActorName(){ return currentGuru ? currentGuru.nama : 'PENTADBIR SISTEM'; }
+
+    async function daftarGuruBaru() {
+        if(currentGuru) return alert('Menu ini hanya tersedia pada paparan induk.');
+        const nama = document.getElementById('guruNamaInput').value.trim().toUpperCase();
+        let id = document.getElementById('guruIdInput').value.trim().toUpperCase();
+        if(!nama) return alert('Sila masukkan nama guru.');
+        let token = janaTokenUnik();
+        while(guruList[token]) token = janaTokenUnik();
+        if(!id) id = nama.split(/\s+/).map(x=>x[0]).join('').slice(0,6);
+        const rekod = { nama, id, aktif:true, dicipta:firebase.database.ServerValue.TIMESTAMP };
+        await db.ref('guru/' + token).set(rekod);
+        guruList[token] = { ...rekod, dicipta:Date.now() };
+        document.getElementById('guruNamaInput').value = '';
+        document.getElementById('guruIdInput').value = '';
+        renderSenaraiGuru();
+        alert('Guru berjaya didaftarkan. Pautan peribadi telah dijana.');
+        const link = pautanGuru(token);
+        try { await navigator.clipboard.writeText(link); } catch(e){}
+        prompt('Salin pautan guru ini:', link);
+    }
+
+    async function toggleGuru(token) {
+        if(currentGuru) return;
+        const g = guruList[token]; if(!g) return;
+        const next = g.aktif === false;
+        await db.ref('guru/' + token + '/aktif').set(next);
+        guruList[token].aktif = next;
+        renderSenaraiGuru();
+    }
+
+    async function padamGuru(token) {
+        if(currentGuru) return;
+        const g = guruList[token]; if(!g) return;
+        if(!confirm(`Padam guru ${g.nama} dan nyahaktifkan pautannya?`)) return;
+        await db.ref('guru/' + token).remove();
+        delete guruList[token];
+        renderSenaraiGuru();
+    }
+
+    function salinPautanGuru(token) {
+        const link = pautanGuru(token);
+        navigator.clipboard?.writeText(link).then(()=>alert('Pautan telah disalin.')).catch(()=>prompt('Salin pautan ini:',link));
+    }
+
+    function bukaPengurusanGuru() {
+        if(currentGuru) return;
+        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
+        document.getElementById('menuFolder').style.display='none';
+        document.getElementById('pengurusanGuruView').style.display='block';
+        renderSenaraiGuru();
+    }
+
+    function renderSenaraiGuru() {
+        const c = document.getElementById('senaraiGuruContainer');
+        if(!c || currentGuru) return;
+        const arr = Object.entries(guruList || {}).sort((a,b)=>String(a[1].nama||'').localeCompare(String(b[1].nama||'')));
+        if(!arr.length) { c.innerHTML='<div class="murid-item">Belum ada guru didaftarkan.</div>'; return; }
+        c.innerHTML = arr.map(([token,g])=>`<div class="murid-item">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+                <div><b>${escapeHtml(g.nama)}</b><br><small style="color:var(--gray-600)">${escapeHtml(g.id||'')}</small></div>
+                <span class="badge-skor" style="background:${g.aktif===false?'#94a3b8':'var(--success)'}">${g.aktif===false?'TIDAK AKTIF':'AKTIF'}</span>
+            </div>
+            <div style="margin-top:10px; font-size:.72rem; color:var(--gray-600); word-break:break-all;">${escapeHtml(pautanGuru(token))}</div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn-aksi" style="background:var(--primary)" onclick="salinPautanGuru('${token}')">🔗 SALIN LINK</button>
+                <button class="btn-aksi" style="background:${g.aktif===false?'var(--success)':'#f59e0b'}" onclick="toggleGuru('${token}')">${g.aktif===false?'AKTIFKAN':'NYAHAKTIF'}</button>
+                <button class="btn-aksi" style="background:var(--danger);max-width:72px" onclick="padamGuru('${token}')">PADAM</button>
+            </div>
+        </div>`).join('');
+    }
+
+    function bukaStatistikMerit() {
+        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
+        document.getElementById('menuFolder').style.display='none';
+        document.getElementById('statistikMeritView').style.display='block';
+        renderStatistikMerit();
+    }
+
+    async function renderStatistikMerit() {
+        const q = (document.getElementById('cariStatMerit')?.value || '').toUpperCase().trim();
+        const c = document.getElementById('statistikMeritContainer');
+        const r = document.getElementById('statistikMeritRingkas');
+        if(!c || !r) return;
+        c.innerHTML = '<div class="murid-item">Memuat statistik...</div>';
+        const snap = await db.ref('logMerit').once('value');
+        const data = snap.val() || {};
+        const logs = Object.values(data);
+        const filtered = databaseMurid.filter(m=>!q || m.nama.includes(q));
+        let jumlah = logs.length;
+        const guruCounter = {};
+        logs.forEach(x=>{ const k=x.guruToken||'ADMIN'; guruCounter[k]=(guruCounter[k]||0)+1; });
+        const guruTeratas = Object.entries(guruCounter).sort((a,b)=>b[1]-a[1])[0];
+        r.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${jumlah}</b><br><small>Jumlah Transaksi</small></div>
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${Object.keys(guruCounter).length}</b><br><small>Guru Mengisi</small></div>
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${guruTeratas?guruTeratas[1]:0}</b><br><small>Transaksi Tertinggi</small></div>
+        </div>`;
+        const html = filtered.map(m=>{
+            const my = logs.filter(x=>x.uid===m.uid);
+            const counters={}; let totalT=0, totalN=0;
+            my.forEach(x=>{ const k=x.guruNama||'PENTADBIR SISTEM'; counters[k]=(counters[k]||0)+1; totalT+=Number(x.perubahan||0); totalN++; });
+            const rows = Object.entries(counters).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;"><span>👨‍🏫 ${escapeHtml(name)}</span><b>${n} kali</b></div>`).join('');
+            return `<div class="murid-item"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><b>${escapeHtml(m.nama)}</b><br><small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${m.markah||0}</span></div><div style="margin-top:10px;font-size:.8rem"><b>${totalN}</b> transaksi • perubahan bersih <b>${totalT>=0?'+':''}${totalT}</b></div><div style="margin-top:8px">${rows || '<small style="color:var(--gray-600)">Belum ada rekod guru.</small>'}</div></div>`;
+        }).join('');
+        c.innerHTML = html || '<div class="murid-item">Tiada murid ditemui.</div>';
+    }
+
+    function setModeMeritCepat(mode) {
+        meritCepatTanda = mode;
+        const tambah = document.getElementById('cepatModeTambah');
+        const tolak = document.getElementById('cepatModeTolak');
+        tambah.style.opacity = mode===1 ? '1':'0.55';
+        tolak.style.opacity = mode===-1 ? '1':'0.55';
+    }
+
+    async function aktifkanWakeLock() {
+        try { if('wakeLock' in navigator) meritCepatWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+    }
+
+    async function lepaskanWakeLock() {
+        try { if(meritCepatWakeLock) { await meritCepatWakeLock.release(); meritCepatWakeLock=null; } } catch(e) {}
+    }
+
+    function bukaMeritCepat() {
+        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
+        document.getElementById('menuFolder').style.display='none';
+        document.getElementById('meritCepatView').style.display='block';
+        setModeMeritCepat(1);
+        document.getElementById('statusMeritCepat').innerText = meritCepatAktif ? '📡 Imbasan sedang aktif.' : 'Belum bermula.';
+    }
+
+    async function mulaMeritCepat() {
+        if(meritCepatAktif) return;
+        if(!('NDEFReader' in window)) return alert('Pelayar/peranti ini tidak menyokong Web NFC. Gunakan Android + Chrome yang menyokong NFC.');
+        const jumlah = parseInt(document.getElementById('jumlahMeritCepat').value,10);
+        if(!jumlah || jumlah<=0) return alert('Masukkan jumlah merit yang sah.');
+        try {
+            if(!nfcReaderInstance) nfcReaderInstance = new NDEFReader();
+            await nfcReaderInstance.scan();
+            meritCepatAktif = true;
+            await aktifkanWakeLock();
+            const status = document.getElementById('statusMeritCepat');
+            status.innerText = `📡 AKTIF — setiap kad akan ${meritCepatTanda===1?'DITAMBAH':'DITOLAK'} ${jumlah} merit.`;
+            document.getElementById('btnMulaMeritCepat').innerText='✅ IMBASAN BERTERUSAN AKTIF';
+            nfcReaderInstance.onreading = async event => {
+                if(!meritCepatAktif) return;
+                const uid = (event.serialNumber||'').replace(/:/g,'').toUpperCase();
+                const now = Date.now();
+                if(uid && uid===lastQuickScanUid && now-lastQuickScanTime<1200) return;
+                lastQuickScanUid=uid; lastQuickScanTime=now;
+                const pts = meritCepatTanda * jumlah;
+                const m = databaseMurid.find(x=>x.uid===uid);
+                const hasil = document.getElementById('hasilMeritCepat');
+                if(!m) {
+                    hasil.innerHTML=`<div style="font-size:2.3rem">⚠️</div><b>KAD TIDAK BERDAFTAR</b><div style="font-size:.78rem;margin-top:6px">UID: ${escapeHtml(uid)}</div>`;
+                    return;
+                }
+                const berjaya = await tukarMarkah(uid, pts, 'MERIT_CEPAT');
+                hasil.innerHTML=`<div style="font-size:2.4rem">✅</div><b style="font-size:1.15rem">${escapeHtml(m.nama)}</b><div style="margin-top:6px;color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</div><div style="font-size:2rem;font-weight:800;color:${pts>0?'var(--success)':'var(--danger)'};margin:10px 0">${pts>0?'+':''}${pts}</div><div style="font-size:.8rem">Markah baharu: <b>${Number(m.markah||0)+pts}</b></div>`;
+            };
+        } catch(e) {
+            meritCepatAktif=false;
+            alert('Gagal memulakan imbasan NFC: ' + (e.message || e));
+        }
+    }
+
+    async function hentiMeritCepat() {
+        meritCepatAktif=false;
+        await lepaskanWakeLock();
+        document.getElementById('statusMeritCepat').innerText='Imbasan dihentikan.';
+        document.getElementById('btnMulaMeritCepat').innerText='📡 MULA IMBASAN BERTERUSAN';
+        if(!currentGuru) kembali(); else kembali();
+    }
+
+    document.addEventListener('visibilitychange', async ()=>{
+        if(meritCepatAktif && document.visibilityState==='visible') await aktifkanWakeLock();
+    });
 
     async function aktifkanNfcLatarBelakang() {
         if (!('NDEFReader' in window)) {
@@ -808,7 +1260,7 @@
 
     function tukarMarkahGlobalNfc(pts) {
         if(globalScanUid) {
-            tukarMarkah(globalScanUid, pts);
+            tukarMarkah(globalScanUid, pts, 'NFC');
             cetusGegar(document.getElementById('modalNfc'));
             let skorSemasa = parseInt(document.getElementById('gNfcSkorDisplay').innerText);
             document.getElementById('gNfcSkorDisplay').innerText = skorSemasa + pts;
@@ -850,14 +1302,20 @@
         if(confirm(`Anda pasti mahu ${isTambah?'menambah':'menolak'} sebanyak ${nilai} markah kepada semua murid kelas ${thn} ${kls}?`)) {
             const hantaranNilai = isTambah ? nilai : -nilai;
             for(let murid of senaraiTarget) {
-                await db.ref('pelajar/' + murid.uid + '/markah').transaction(c => (c || 0) + hantaranNilai);
+                await tukarMarkah(murid.uid, hantaranNilai, 'PUKAL');
             }
             await kemaskiniRanking(thn);
             alert(`Berjaya dikemaskini secara pukal!`);
         }
     }
 
+    // --- FUNGSI RESET MERIT PUKAL BERPASSWORD (KHAS PADA PAPARAN ADMIN) ---
     async function resetPukalBerpassword(elemenButang) {
+        if (currentGuru) {
+            alert("Akses ditolak. Fungsi reset merit hanya dibenarkan pada paparan Pentadbir / Admin.");
+            return;
+        }
+
         cetusGegar(elemenButang);
         const pwd = prompt("Sila masukkan kata laluan untuk reset markah merit:");
         if (pwd === null) return; 
@@ -882,7 +1340,15 @@
 
         if (confirm(`PENGESAHAN AKHIR:\nAdakah anda pasti mahu menetapkan semula (RESET) markah merit SEMUA murid kelas ${thn} ${kls} kepada ${nilaiBaru}?`)) {
             for (let murid of senaraiTarget) {
+                const sebelum = Number(murid.markah || 0);
+                const beza = nilaiBaru - sebelum;
                 await db.ref('pelajar/' + murid.uid + '/markah').set(nilaiBaru);
+                await db.ref('logMerit').push({
+                    uid: murid.uid, nama: murid.nama, tahun: murid.tahun, kelas: murid.namaKelas,
+                    guruToken: 'ADMIN', guruId: 'ADMIN', guruNama: 'PENTADBIR SISTEM (RESET)',
+                    perubahan: beza, sebelum: sebelum, selepas: nilaiBaru,
+                    kaedah: 'RESET_ADMIN', tarikh: getTarikhHariIni(), timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
             }
             await kemaskiniRanking(thn);
             alert(`Markah merit bagi semua murid kelas ${thn} ${kls} telah berjaya diset semula kepada ${nilaiBaru}!`);
@@ -890,6 +1356,7 @@
     }
 
     function kembali() { 
+        if(meritCepatAktif) { meritCepatAktif=false; lepaskanWakeLock(); }
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'block';
         document.getElementById('cariUtama').value = "";
@@ -952,7 +1419,7 @@
         }
     }
 
-    // --- LOGIK MODUL REKOD BACAAN BACAAN (IQRA & ALQURAN) ---
+    // --- LOGIK MODUL REKOD BACAAN (IQRA & ALQURAN) ---
     function bukaBacaan() {
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'none';
@@ -987,7 +1454,7 @@
             <div class="murid-item" style="padding:15px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                     <div>
-                        <b>${m.nama}</b><br>
+                        <b>${escapeHtml(m.nama)}</b><br>
                         ${badgeHTML}
                     </div>
                 </div>
@@ -1197,6 +1664,13 @@
         renderKehadiran();
     }
 
+    async function setKehadiranMurid(uid, status) {
+        const tarikh = document.getElementById('tarikhHadir').value;
+        if(!tarikh) return alert("Sila pilih tarikh.");
+        await db.ref('kehadiran/' + tarikh + '/' + uid).set(status);
+        renderKehadiran();
+    }
+
     async function renderKehadiran() {
         const tarikh = document.getElementById('tarikhHadir').value;
         const thn = document.getElementById('selTahunHadir').value;
@@ -1216,9 +1690,14 @@
             if(isHadir) hadirCount++;
             container.innerHTML += `
             <div class="murid-item" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>${m.nama}</b></div>
-                <div style="background:${isHadir?'var(--success)':'#fee2e2'}; color:${isHadir?'white':'var(--danger)'}; padding:8px 12px; border-radius:10px; font-size:0.8rem; font-weight:800;">
-                    ${isHadir ? 'HADIR' : 'TIDAK HADIR'}
+                <div><b>${escapeHtml(m.nama)}</b></div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:${isHadir?'var(--success)':'#cbd5e1'}; padding:8px 12px;" onclick="setKehadiranMurid('${m.uid}', true)">
+                        HADIR
+                    </button>
+                    <button class="btn-aksi" style="background:${!isHadir?'var(--danger)':'#cbd5e1'}; padding:8px 12px;" onclick="setKehadiranMurid('${m.uid}', false)">
+                        TIADA
+                    </button>
                 </div>
             </div>`;
         });
@@ -1230,6 +1709,13 @@
         document.getElementById('menuFolder').style.display = 'none';
         document.getElementById('rmtView').style.display = 'block';
         if(!document.getElementById('tarikhRMT').value) document.getElementById('tarikhRMT').value = getTarikhHariIni();
+        renderRMT();
+    }
+
+    async function setKehadiranRMT(uid, status) {
+        const tarikh = document.getElementById('tarikhRMT').value;
+        if(!tarikh) return alert("Sila pilih tarikh.");
+        await db.ref('kehadiran/' + tarikh + '/' + uid).set(status);
         renderRMT();
     }
 
@@ -1255,9 +1741,14 @@
             if(isHadir) hadirCount++;
             container.innerHTML += `
             <div class="murid-item" style="display:flex; justify-content:space-between; align-items:center;">
-                <div><b>${m.nama}</b><div style="font-size:0.75rem; color:var(--gray-600);">TAHUN ${m.tahun} ${m.namaKelas}</div></div>
-                <div style="background:${isHadir?'var(--success)':'#fee2e2'}; color:${isHadir?'white':'var(--danger)'}; padding:8px 12px; border-radius:10px; font-size:0.8rem; font-weight:800;">
-                    ${isHadir ? 'HADIR RMT' : 'TIDAK HADIR'}
+                <div><b>${escapeHtml(m.nama)}</b><div style="font-size:0.75rem; color:var(--gray-600);">TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</div></div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:${isHadir?'var(--success)':'#cbd5e1'}; padding:8px 12px;" onclick="setKehadiranRMT('${m.uid}', true)">
+                        HADIR
+                    </button>
+                    <button class="btn-aksi" style="background:${!isHadir?'var(--danger)':'#cbd5e1'}; padding:8px 12px;" onclick="setKehadiranRMT('${m.uid}', false)">
+                        TIADA
+                    </button>
                 </div>
             </div>`;
         });
@@ -1276,7 +1767,7 @@
         if(!val) return;
         let list = databaseMurid.filter(m => m.nama.includes(val.toUpperCase()));
         list.slice(0, 5).forEach(m => {
-            container.innerHTML += `<div style="padding:12px 15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9;"><div style="font-weight:bold; font-size:0.85rem;">${m.nama}</div><button class="btn-aksi" style="background:var(--danger); max-width:80px; padding:8px;" onclick="bukaFormSalahLaku('${m.uid}')">REKOD</button></div>`;
+            container.innerHTML += `<div style="padding:12px 15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f1f5f9;"><div style="font-weight:bold; font-size:0.85rem;">${escapeHtml(m.nama)}</div><button class="btn-aksi" style="background:var(--danger); max-width:80px; padding:8px;" onclick="bukaFormSalahLaku('${m.uid}')">REKOD</button></div>`;
         });
     }
 
@@ -1296,11 +1787,13 @@
         const catatan = document.getElementById('slCatatan').value;
         if(!kesalahan) return alert("Sila pilih jenis kesalahan!");
 
+        const actor = currentGuru || { token:'ADMIN', id:'ADMIN', nama:'PENTADBIR SISTEM' };
         await db.ref('salahLaku').push({
             uid: uid, nama: m.nama, tahun: m.tahun, kelas: m.namaKelas,
+            guruToken: actor.token || 'ADMIN', guruId: actor.id || 'ADMIN', guruNama: actor.nama || 'PENTADBIR SISTEM',
             kesalahan: kesalahan, catatan: catatan, tarikh: getTarikhHariIni(), masa: new Date().toLocaleString()
         });
-        await tukarMarkah(uid, -5);
+        await tukarMarkah(uid, -5, 'DISIPLIN');
         alert("Rekod berjaya ditolak.");
         tutupFormSalahLaku();
     }
@@ -1308,225 +1801,56 @@
     function renderDisiplinStats() {
         const statContainer = document.getElementById('statKesalahanContainer');
         const listContainer = document.getElementById('senaraiKesalahanContainer');
-        statContainer.innerHTML = ""; listContainer.innerHTML = "";
+        if(statContainer) statContainer.innerHTML = "";
+        if(listContainer) listContainer.innerHTML = "";
         
         databaseSalahLaku.forEach(r => {
-            listContainer.innerHTML += `<div class="murid-item"><b>${r.nama}</b><br><small style="color:var(--danger); font-weight:600;">${r.kesalahan}</small></div>`;
+            if(listContainer) {
+                listContainer.innerHTML += `<div class="murid-item"><b>${escapeHtml(r.nama)}</b><br><small style="color:var(--danger); font-weight:600;">${escapeHtml(r.kesalahan)}</small></div>`;
+            }
         });
     }
 
-    function bukaPanelCetak() {
+    function bukaSenaraiKelas(tahun, kelas) {
+        curTahun = tahun; curKelas = kelas;
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'none';
-        document.getElementById('cetakView').style.display = 'block';
+        document.getElementById('senaraiView').style.display = 'block';
+        document.getElementById('labelKelas').innerText = `TAHUN ${tahun} ${kelas}`;
+        renderMurid();
     }
 
-    // --- LOGIK UTAMA CETAKAN LAPORAN ---
-    async function janaLaporan(jenis) {
-        const fTahun = document.getElementById('printFilterTahun').value;
-        const fKelas = document.getElementById('printFilterKelas').value;
-        const sBulan = document.getElementById('printBulan').value;
-        const sTahun = document.getElementById('printTahun').value;
-        const namaBulan = document.getElementById('printBulan').options[document.getElementById('printBulan').selectedIndex].text;
+    function renderMurid() {
+        const container = document.getElementById('muridContainer');
+        container.innerHTML = "";
+        let list = databaseMurid.filter(m => m.tahun == curTahun && m.namaKelas == curKelas);
+        list.sort((a,b) => a.nama.localeCompare(b.nama));
 
-        const subTajuk = document.getElementById('printSubTajuk');
-        const targetIsi = document.getElementById('printTargetIsi');
-        const kawasanCetak = document.getElementById('cetakBorangKawasan');
-
-        kawasanCetak.style.display = 'block';
-        targetIsi.innerHTML = "Sistem sedang menjana data, sila tunggu...";
-
-        let htmlHTML = "";
-        let teksKelas = (fTahun === "ALL") ? "SEMUA ALIRAN" : `TAHUN ${fTahun}`;
-        if(fKelas !== "ALL") teksKelas += ` ${fKelas}`;
-
-        if(jenis === 'merit') {
-            subTajuk.innerText = `LAPORAN MARKAH MERIT SEMASA MURID (${teksKelas})`;
-            let saring = databaseMurid.filter(m => scarcityCheck(m, fTahun, fKelas));
-            saring.sort((a,b) => b.markah - a.markah);
-
-            htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:15%">MARKAH MERIT</th><th style="width:20%">STATUS</th></tr></thead><tbody>`;
-            saring.forEach((m, idx) => {
-                let status = m.markah >= 80 ? 'CEMERLANG' : (m.markah < 40 ? 'AMARAN' : 'BAIK');
-                htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><center><b>${m.markah || 0}</b></center></td><td>${status}</td></tr>`;
-            });
-            htmlHTML += `</tbody></table>`;
-        } 
-        else if (jenis === 'bacaan') {
-            subTajuk.innerText = `LAPORAN REKOD BACAAN IQRA' & AL-QURAN MURID (${teksKelas})`;
-            let saring = databaseMurid.filter(m => scarcityCheck(m, fTahun, fKelas));
-            saring.sort((a,b) => a.nama.localeCompare(b.nama));
-
-            htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:25%">PERINGKAT BACAAN</th><th style="width:15%">MUKA SURAT</th></tr></thead><tbody>`;
-            saring.forEach((m, idx) => {
-                const j = m.jenisBacaan || 'IQRA';
-                const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
-                const ms = m.mukaSurat || '1';
-                htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><b>${jilid}</b></td><td><center>M/S ${ms}</center></td></tr>`;
-            });
-            htmlHTML += `</tbody></table>`;
-        }
-        else if (jenis === 'kehadiran') {
-            subTajuk.innerText = `ANALISIS REKOD KEHADIRAN BULANAN MURID (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
-            const snapK = await db.ref('kehadiran').once('value');
-            const dataK = snapK.val() || {};
-
-            let saringMurid = databaseMurid.filter(m => scarcityCheck(m, fTahun, fKelas));
-            saringMurid.sort((a,b) => a.nama.localeCompare(b.nama));
-
-            let kunciTarikhTerlibat = Object.keys(dataK).filter(t => t.startsWith(`${sTahun}-${sBulan}`));
-            let bilanganHariSekolah = kunciTarikhTerlibat.length;
-
-            if(bilanganHariSekolah === 0) {
-                htmlHTML = `<p style="color:red; text-align:center; font-weight:bold; padding:30px;">Tiada data kehadiran direkodkan bagi bulan ${namaBulan} ${sTahun}.</p>`;
-            } else {
-                htmlHTML = `<p style="font-size:0.9rem; margin-bottom:12px; color:#333;"><b>Jumlah Hari Persekolahan Berdata:</b> ${bilanganHariSekolah} Hari</p>
-                            <table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:20%">HADIR (HARI)</th><th style="width:15%">PERATUSAN</th></tr></thead><tbody>`;
-                
-                saringMurid.forEach((m, idx) => {
-                    let hadirHari = 0;
-                    kunciTarikhTerlibat.forEach(t => { if(dataK[t][m.uid] === true) hadirHari++; });
-                    let peratus = ((hadirHari / bilanganHariSekolah) * 100).toFixed(1);
-                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td>${hadirHari} / ${bilanganHariSekolah} Hari</td><td><b>${peratus}%</b></td></tr>`;
-                });
-                htmlHTML += `</tbody></table>`;
-            }
-        }
-        else if (jenis === 'rmt') {
-            subTajuk.innerText = `REKOD LOG BULANAN PROGRAM RMT (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
-            const snapK = await db.ref('kehadiran').once('value');
-            const dataK = snapK.val() || {};
-
-            let saringMurid = databaseMurid.filter(m => (m.rmt === true || m.rmt === "true") && scarcityCheck(m, fTahun, fKelas));
-            
-            saringMurid.sort((a,b) => {
-                if (parseInt(a.tahun) !== parseInt(b.tahun)) return parseInt(a.tahun) - parseInt(b.tahun);
-                return a.nama.localeCompare(b.nama);
-            });
-
-            let kunciTarikhTerlibat = Object.keys(dataK).filter(t => t.startsWith(`${sTahun}-${sBulan}`));
-
-            if(kunciTarikhTerlibat.length === 0) {
-                htmlHTML = `<p style="color:red; text-align:center; font-weight:bold; padding:30px;">Tiada data log pengambilan makanan RMT pada bulan ${namaBulan} ${sTahun}.</p>`;
-            } else {
-                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENERIMA RMT</th><th style="width:25%">KELAS</th><th>JUMLAH GAGASAN MAKAN (HARI)</th></tr></thead><tbody>`;
-                saringMurid.forEach((m, idx) => {
-                    let makanHari = 0;
-                    kunciTarikhTerlibat.forEach(t => { if(dataK[t][m.uid] === true) makanHari++; });
-                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><b>${makanHari} Hari Bersiar</b></td></tr>`;
-                });
-                htmlHTML += `</tbody></table>`;
-            }
-        }
-        else if(jenis === 'disiplin') {
-            subTajuk.innerText = `REKOD SALAH LAKU DISIPLIN BULANAN MURID (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
-            
-            let saringKes = databaseSalahLaku.filter(r => {
-                if(!r.tarikh || !r.tarikh.startsWith(`${sTahun}-${sBulan}`)) return false;
-                if(fTahun !== "ALL" && r.tahun != fTahun) return false;
-                if(fKelas !== "ALL" && r.kelas != fKelas) return false;
-                return true;
-            });
-
-            if(saringKes.length === 0) {
-                htmlHTML = `<p style="color:green; text-align:center; font-weight:bold; padding:30px; border: 1px dashed #10b981; border-radius:10px;">Tiada Sebarang Rekod Salah Laku Dikesan Bagi Bulan ${namaBulan} ${sTahun}. Disiplin Murid Terpelihara.</p>`;
-            } else {
-                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th style="width:15%">TARIKH / MASA</th><th>NAMA MURID</th><th style="width:15%">KELAS</th><th style="width:25%">JENIS KESALAHAN</th><th>CATATAN GURU</th></tr></thead><tbody>`;
-                saringKes.forEach((r, idx) => {
-                    htmlHTML += `<tr><td>${idx+1}</td><td><small>${r.masa || r.tarikh}</small></td><td><b>${r.nama}</b></td><td>TAHUN ${r.tahun} ${r.kelas}</td><td style="font-weight:600; color:#b91c1c;">${r.kesalahan}</td><td>${r.catatan || '-'}</td></tr>`;
-                });
-                htmlHTML += `</tbody></table>`;
-            }
-        }
-
-        targetIsi.innerHTML = htmlHTML;
-        setTimeout(() => { window.print(); }, 400);
-    }
-
-    // --- GRID KELAS UTAMA ---
-    const grid = document.getElementById('gridKelas');
-    for(let t=1; t<=6; t++) {
-        ['DELIMA', 'ZAMRUD'].forEach(k => {
-            const btn = document.createElement('div');
-            btn.className = 'card-btn'; 
-            btn.innerText = `${t} ${k}`;
-            btn.onclick = () => {
-                curTahun = t; curKelas = k;
-                document.getElementById('menuFolder').style.display = 'none';
-                document.getElementById('senaraiView').style.display = 'block';
-                document.getElementById('labelKelas').innerText = `TAHUN ${t} ${k}`;
-                reRenderSenarai();
-            };
-            grid.appendChild(btn);
-        });
-    }
-
-    // --- FIREBASE LISTENERS ---
-    db.ref('pelajar').on('value', snap => {
-        const data = snap.val(); databaseMurid = [];
-        for(let key in data) { databaseMurid.push({uid: key, ...data[key]}); }
-        if(document.getElementById('senaraiView').style.display === 'block') reRenderSenarai();
-        if(document.getElementById('bacaanView').style.display === 'block') renderSenaraiBacaan();
-        if(document.getElementById('kehadiranView').style.display === 'block') renderKehadiran();
-        if(document.getElementById('rmtView').style.display === 'block') renderRMT();
-    });
-
-    db.ref('salahLaku').on('value', snap => {
-        const data = snap.val(); databaseSalahLaku = [];
-        for(let key in data) { databaseSalahLaku.push({id: key, ...data[key]}); }
-        if(document.getElementById('disiplinView').style.display === 'block') renderDisiplinStats();
-    });
-
-    db.ref('kerjaRumah').on('value', snap => {
-        databaseKerjaRumah = snap.val() || {};
-        if(document.getElementById('kerjaRumahView').style.display === 'block' && curKrTahun && curKrKelas) {
-            renderKerjaRumah();
-        }
-    });
-
-    function logikCarian(val) {
-        if(val) {
-            document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
-            document.getElementById('menuFolder').style.display = 'none';
-            document.getElementById('senaraiView').style.display = 'block';
-            document.getElementById('labelKelas').innerText = "HASIL CARIAN";
-            curTahun = null; 
-        } else { kembali(); }
-        reRenderSenarai();
-    }
-
-    function reRenderSenarai() {
-        const searchVal = document.getElementById('cariUtama').value.toUpperCase();
-        let list = searchVal 
-            ? databaseMurid.filter(m => m.nama.includes(searchVal)) 
-            : databaseMurid.filter(m => m.tahun == curTahun && m.namaKelas == curKelas);
-            
-        const container = document.getElementById('muridContainer'); container.innerHTML = "";
-        list.sort((a,b) => b.markah - a.markah).forEach(m => {
+        list.forEach(m => {
             const j = m.jenisBacaan || 'IQRA';
             const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
             const ms = m.mukaSurat || '1';
-            
+
             container.innerHTML += `
-            <div class="murid-item" id="item-${m.uid}">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="murid-item">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div>
-                        <b>${m.nama}</b><br>
-                        <small style="color:var(--gray-600);">Tahun ${m.tahun} ${m.namaKelas}</small><br>
+                        <b>${escapeHtml(m.nama)}</b><br>
+                        <small style="color:var(--gray-600)">UID: ${escapeHtml(m.uid)}</small><br>
                         <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
                     </div>
                     <span class="badge-skor">${m.markah || 0}</span>
                 </div>
-                <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button class="btn-aksi" style="background:var(--success)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', 5)">+5</button>
-                    <button class="btn-aksi" style="background:var(--danger)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', -5)">-5</button>
-                    <button class="btn-aksi" style="background:#f1f5f9; color:black; max-width:40px;" onclick="editMurid('${m.uid}')">✏️</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${m.uid}', -5)">-5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--dark); max-width:60px;" onclick="editMurid('${m.uid}')">✏️</button>
                 </div>
             </div>`;
         });
     }
 
-    window.editMurid = function(uid) {
+    function editMurid(uid) {
         const m = databaseMurid.find(x => x.uid === uid);
         document.getElementById('regUid').value = m.uid;
         document.getElementById('regNama').value = m.nama;
@@ -1540,6 +1864,180 @@
         document.getElementById('btnPadam').style.display = 'block';
         document.getElementById('formView').style.display = 'block';
     }
+
+    function logikCarian(val) {
+        if(!val) { kembali(); return; }
+        document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+        document.getElementById('menuFolder').style.display = 'none';
+        document.getElementById('senaraiView').style.display = 'block';
+        document.getElementById('labelKelas').innerText = "HASIL CARIAN";
+
+        const container = document.getElementById('muridContainer');
+        container.innerHTML = "";
+        let list = databaseMurid.filter(m => m.nama.includes(val.toUpperCase()));
+
+        list.forEach(m => {
+            const j = m.jenisBacaan || 'IQRA';
+            const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
+            const ms = m.mukaSurat || '1';
+
+            container.innerHTML += `
+            <div class="murid-item">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div>
+                        <b>${escapeHtml(m.nama)}</b><br>
+                        <small style="color:var(--gray-600)">TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</small><br>
+                        <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
+                    </div>
+                    <span class="badge-skor">${m.markah || 0}</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${m.uid}', -5)">-5 MERIT</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    function bukaPanelCetak() {
+        document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+        document.getElementById('menuFolder').style.display = 'none';
+        document.getElementById('cetakView').style.display = 'block';
+    }
+
+    async function janaLaporan(jenis) {
+        const thn = document.getElementById('printFilterTahun').value;
+        const kls = document.getElementById('printFilterKelas').value;
+        const bln = document.getElementById('printBulan').value;
+        const thnBln = document.getElementById('printTahun').value;
+        const namaBulan = document.getElementById('printBulan').options[document.getElementById('printBulan').selectedIndex].text;
+        
+        const subTajuk = document.getElementById('printSubTajuk');
+        const target = document.getElementById('printTargetIsi');
+        target.innerHTML = "";
+
+        if(jenis === 'merit') {
+            subTajuk.innerText = `LAPORAN MARKAH MERIT SEMASA (${thn === 'ALL' ? 'SEMUA TAHUN' : 'TAHUN '+thn} ${kls === 'ALL' ? '' : kls})`;
+            let senarai = databaseMurid.filter(m => scarcityCheck(m, thn, kls));
+            senarai.sort((a,b) => (b.markah||0) - (a.markah||0));
+
+            let html = `<table class="print-table"><thead><tr><th>BIL</th><th>NAMA MURID</th><th>KELAS</th><th>MARKAH MERIT</th></tr></thead><tbody>`;
+            senarai.forEach((m, idx) => {
+                html += `<tr><td>${idx+1}</td><td>${escapeHtml(m.nama)}</td><td>TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</td><td><b>${m.markah||0}</b></td></tr>`;
+            });
+            html += `</tbody></table>`;
+            target.innerHTML = html;
+        } else if (jenis === 'bacaan') {
+            subTajuk.innerText = `LAPORAN REKOD BACAAN IQRA' & AL-QURAN MURID (${thn === 'ALL' ? 'SEMUA TAHUN' : 'TAHUN '+thn} ${kls === 'ALL' ? '' : kls})`;
+            let senarai = databaseMurid.filter(m => scarcityCheck(m, thn, kls));
+            senarai.sort((a,b) => a.nama.localeCompare(b.nama));
+
+            let html = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:25%">PERINGKAT BACAAN</th><th style="width:15%">MUKA SURAT</th></tr></thead><tbody>`;
+            senarai.forEach((m, idx) => {
+                const j = m.jenisBacaan || 'IQRA';
+                const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
+                const ms = m.mukaSurat || '1';
+                html += `<tr><td>${idx+1}</td><td><b>${escapeHtml(m.nama)}</b></td><td>TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</td><td><b>${jilid}</b></td><td><center>M/S ${ms}</center></td></tr>`;
+            });
+            html += `</tbody></table>`;
+            target.innerHTML = html;
+        } else if(jenis === 'kehadiran') {
+            subTajuk.innerText = `LAPORAN KEHADIRAN BULAN ${bln}/${thnBln}`;
+            target.innerHTML = "<p>Memuat data rekod bulanan...</p>";
+            
+            let senarai = databaseMurid.filter(m => scarcityCheck(m, thn, kls));
+            senarai.sort((a,b) => a.nama.localeCompare(b.nama));
+            
+            let html = `<table class="print-table"><thead><tr><th>BIL</th><th>NAMA MURID</th><th>TAHUN/KELAS</th></tr></thead><tbody>`;
+            senarai.forEach((m, idx) => {
+                html += `<tr><td>${idx+1}</td><td>${escapeHtml(m.nama)}</td><td>TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            target.innerHTML = html;
+        } else if(jenis === 'rmt') {
+            subTajuk.innerText = `LAPORAN PENERIMA RMT BULAN ${bln}/${thnBln}`;
+            let senarai = databaseMurid.filter(m => (m.rmt === true || m.rmt === "true") && scarcityCheck(m, thn, kls));
+            senarai.sort((a,b) => a.nama.localeCompare(b.nama));
+
+            let html = `<table class="print-table"><thead><tr><th>BIL</th><th>NAMA MURID</th><th>TAHUN/KELAS</th></tr></thead><tbody>`;
+            senarai.forEach((m, idx) => {
+                html += `<tr><td>${idx+1}</td><td>${escapeHtml(m.nama)}</td><td>TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            target.innerHTML = html;
+        } else if(jenis === 'disiplin') {
+            subTajuk.innerText = `LAPORAN REKOD DISIPLIN BULAN ${bln}/${thnBln}`;
+            let html = `<table class="print-table"><thead><tr><th>BIL</th><th>NAMA MURID</th><th>KELAS</th><th>KESALAHAN</th><th>TARIKH</th></tr></thead><tbody>`;
+            let count = 0;
+            databaseSalahLaku.forEach(r => {
+                if(r.tarikh && r.tarikh.startsWith(`${thnBln}-${bln}`)) {
+                    count++;
+                    html += `<tr><td>${count}</td><td>${escapeHtml(r.nama)}</td><td>TAHUN ${r.tahun} ${escapeHtml(r.kelas)}</td><td>${escapeHtml(r.kesalahan)}</td><td>${r.tarikh}</td></tr>`;
+                }
+            });
+            html += `</tbody></table>`;
+            target.innerHTML = count > 0 ? html : "<p style='text-align:center;'>Tiada rekod kesalahan pada bulan ini.</p>";
+        }
+
+        document.getElementById('cetakBorangKawasan').style.display = 'block';
+        setTimeout(() => { window.print(); }, 500);
+    }
+
+    function binaGridKelas() {
+        const grid = document.getElementById('gridKelas');
+        grid.innerHTML = "";
+        for(let t=1; t<=6; t++) {
+            ['DELIMA', 'ZAMRUD'].forEach(k => {
+                const btn = document.createElement('div');
+                btn.className = 'card-btn';
+                btn.innerText = `${t} ${k}`;
+                btn.onclick = () => bukaSenaraiKelas(t, k);
+                grid.appendChild(btn);
+            });
+        }
+    }
+
+    // --- PENYAMBUNGAN UTAMA DATA REALTIME ---
+    db.ref('pelajar').on('value', snap => {
+        const data = snap.val();
+        databaseMurid = [];
+        if(data) {
+            for(let id in data) {
+                databaseMurid.push({ uid: id, ...data[id] });
+            }
+        }
+        if(document.getElementById('senaraiView').style.display === 'block' && curTahun && curKelas) {
+            renderMurid();
+        }
+        if(document.getElementById('bacaanView').style.display === 'block') {
+            renderSenaraiBacaan();
+        }
+    });
+
+    db.ref('salahLaku').on('value', snap => {
+        const data = snap.val();
+        databaseSalahLaku = [];
+        if(data) {
+            for(let id in data) {
+                databaseSalahLaku.push({ id: id, ...data[id] });
+            }
+            databaseSalahLaku.reverse();
+        }
+        if(document.getElementById('disiplinView').style.display === 'block') {
+            renderDisiplinStats();
+        }
+    });
+
+    db.ref('kerjaRumah').on('value', snap => {
+        databaseKerjaRumah = snap.val() || {};
+        if(document.getElementById('kerjaRumahView').style.display === 'block') {
+            renderKerjaRumah();
+        }
+    });
+
+    // Inisialisasi Aplikasi
+    binaGridKelas();
+    muatKonfigurasiAkses();
 </script>
 </body>
 </html>
