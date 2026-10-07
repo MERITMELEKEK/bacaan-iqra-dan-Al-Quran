@@ -85,6 +85,72 @@
             box-shadow: 0 15px 30px -5px rgba(67, 56, 202, 0.15);
             border-color: var(--primary);
         }
+        .carian-kelas-wrap {
+            background: #fff;
+            border-radius: 22px;
+            padding: 12px;
+            box-shadow: 0 12px 25px -5px rgba(0,0,0,.08);
+        }
+        .carian-kelas-wrap label {
+            display:block;
+            font-size:.7rem;
+            font-weight:800;
+            color:var(--gray-600);
+            letter-spacing:.7px;
+            margin:0 0 7px 5px;
+        }
+        .carian-kelas-wrap select {
+            margin-bottom:9px;
+            background:#f8fafc;
+            border-color:#dbeafe;
+            font-weight:700;
+        }
+        .carian-kelas-wrap #cariUtama {
+            box-shadow:none;
+            border-color:#e2e8f0;
+        }
+        .carian-kelas-wrap #cariUtama:disabled {
+            background:#f1f5f9;
+            cursor:not-allowed;
+        }
+        .status-carian {
+            font-size:.72rem;
+            color:var(--gray-600);
+            padding:4px 5px 1px;
+            font-weight:600;
+        }
+        .ranking-header {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            margin-bottom:12px;
+        }
+        .ranking-number {
+            min-width:38px;
+            height:38px;
+            border-radius:12px;
+            background:#eef2ff;
+            color:#3730a3;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:900;
+            font-size:1rem;
+        }
+        .ranking-number.top1 { background:#fef3c7; color:#92400e; }
+        .ranking-number.top2 { background:#e2e8f0; color:#334155; }
+        .ranking-number.top3 { background:#ffedd5; color:#9a3412; }
+        .merit-sort-note {
+            background:#eff6ff;
+            border:1px solid #bfdbfe;
+            color:#1e40af;
+            padding:10px 12px;
+            border-radius:14px;
+            font-size:.75rem;
+            font-weight:700;
+            margin-bottom:12px;
+        }
 
         .content { padding: 0 20px 100px 20px; }
 
@@ -467,7 +533,26 @@
 
 <div class="search-container">
     <div id="nfcStatusIndicator" class="status-nfc-aktif">📡 ANTENNA NFC DIHIDUPKAN (SEDIA DIIMBAS PADA BILA-BILA MASA)</div>
-    <input type="text" id="cariUtama" placeholder="🔍 Cari nama murid (Merit Utama)..." oninput="logikCarian(this.value)">
+    <div class="carian-kelas-wrap">
+        <label for="cariKelasUtama">1. PILIH KELAS DAHULU</label>
+        <select id="cariKelasUtama" onchange="tukarKelasCarian(this.value)">
+            <option value="">-- Pilih Tahun & Kelas --</option>
+            <option value="1|DELIMA">Tahun 1 DELIMA</option>
+            <option value="1|ZAMRUD">Tahun 1 ZAMRUD</option>
+            <option value="2|DELIMA">Tahun 2 DELIMA</option>
+            <option value="2|ZAMRUD">Tahun 2 ZAMRUD</option>
+            <option value="3|DELIMA">Tahun 3 DELIMA</option>
+            <option value="3|ZAMRUD">Tahun 3 ZAMRUD</option>
+            <option value="4|DELIMA">Tahun 4 DELIMA</option>
+            <option value="4|ZAMRUD">Tahun 4 ZAMRUD</option>
+            <option value="5|DELIMA">Tahun 5 DELIMA</option>
+            <option value="5|ZAMRUD">Tahun 5 ZAMRUD</option>
+            <option value="6|DELIMA">Tahun 6 DELIMA</option>
+            <option value="6|ZAMRUD">Tahun 6 ZAMRUD</option>
+        </select>
+        <input type="text" id="cariUtama" placeholder="🔍 2. Cari nama murid dalam kelas terpilih..." oninput="logikCarian(this.value)" disabled>
+        <div id="statusCarianUtama" class="status-carian">Sila pilih kelas terlebih dahulu.</div>
+    </div>
 </div>
 
 <div class="content">
@@ -895,20 +980,62 @@
         }
     }
 
-    async function kemaskiniRanking(tahun) {
-        const snap = await db.ref('pelajar').orderByChild('tahun').equalTo(tahun.toString()).once('value');
-        const data = snap.val();
-        let senarai = [];
-        if(data) {
-            for(let id in data) senarai.push({ nama: data[id].nama, markah: data[id].markah || 0 });
+    async function kemaskiniRanking(tahun, kelas = null) {
+        const query = db.ref('pelajar').orderByChild('tahun').equalTo(String(tahun));
+        const snap = await query.once('value');
+        const data = snap.val() || {};
+        const kumpulan = {};
+
+        Object.entries(data).forEach(([uid, murid]) => {
+            const k = String(murid.namaKelas || '').toUpperCase();
+            if (!kumpulan[k]) kumpulan[k] = [];
+            kumpulan[k].push({
+                uid,
+                nama: String(murid.nama || ''),
+                markah: Number(murid.markah || 0)
+            });
+        });
+
+        const kelasUntukDikemasKini = kelas
+            ? [String(kelas).toUpperCase()]
+            : Object.keys(kumpulan);
+
+        for (const k of kelasUntukDikemasKini) {
+            const senarai = (kumpulan[k] || []).sort((a,b) =>
+                b.markah - a.markah || a.nama.localeCompare(b.nama, 'ms')
+            );
+            const ranking = {};
+            for (let i = 0; i < Math.max(3, senarai.length); i++) {
+                if (senarai[i]) {
+                    ranking[i + 1] = {
+                        uid: senarai[i].uid,
+                        n: senarai[i].nama.substring(0, 30),
+                        m: senarai[i].markah
+                    };
+                }
+            }
+            await db.ref('ranking/T' + tahun + '_' + k).set(ranking);
         }
-        senarai.sort((a,b) => b.markah - a.markah);
-        let top3 = {};
-        for(let i=0; i<3; i++) {
-            if(senarai[i]) top3[i+1] = { n: senarai[i].nama.substring(0,15), m: senarai[i].markah };
-            else top3[i+1] = { n: "-", m: 0 };
+
+        // Kekalkan ranking tahap tahun untuk keserasian dengan modul lama.
+        const semuaTahun = Object.values(kumpulan).flat().sort((a,b) =>
+            b.markah - a.markah || a.nama.localeCompare(b.nama, 'ms')
+        );
+        const rankingTahun = {};
+        for (let i = 0; i < Math.max(3, semuaTahun.length); i++) {
+            if (semuaTahun[i]) {
+                rankingTahun[i + 1] = {
+                    uid: semuaTahun[i].uid,
+                    n: semuaTahun[i].nama.substring(0, 30),
+                    m: semuaTahun[i].markah
+                };
+            }
         }
-        await db.ref('ranking/T' + tahun).set(top3);
+        await db.ref('ranking/T' + tahun).set(rankingTahun);
+    }
+
+    function kemaskiniKedudukanPaparan(list) {
+        return list.map((m, index) => ({ ...m, kedudukan: index + 1 }));
     }
 
     async function tukarMarkah(uid, pts, kaedah = 'MANUAL') {
@@ -916,7 +1043,7 @@
         if(!m) return false;
         const actor = currentGuru || { token:'ADMIN', nama:'PENTADBIR SISTEM', id:'ADMIN' };
         const sebelum = Number(m.markah || 0);
-        await db.ref('pelajar/' + uid + '/markah').transaction(c => (c || 0) + Number(pts));
+        await db.ref('pelajar/' + uid + '/markah').transaction(c => Number(c || 0) + Number(pts));
         const selepas = sebelum + Number(pts);
         await db.ref('logMerit').push({
             uid: uid, nama: m.nama, tahun: m.tahun, kelas: m.namaKelas,
@@ -924,7 +1051,7 @@
             perubahan: Number(pts), sebelum: sebelum, selepas: selepas,
             kaedah: kaedah, tarikh: getTarikhHariIni(), timestamp: firebase.database.ServerValue.TIMESTAMP
         });
-        await kemaskiniRanking(m.tahun);
+        await kemaskiniRanking(m.tahun, m.namaKelas);
         return true;
     }
 
@@ -1328,7 +1455,7 @@
             jenisBacaan: "IQRA", jilidIqra: "1", mukaSurat: 1 
         });
         await db.ref('pelajar/' + uid + '/markah').set(0);
-        await kemaskiniRanking(thn);
+        await kemaskiniRanking(thn, kls);
         alert("Pendaftaran berjaya disimpan!");
         tutupPopupNfcGlobal();
     }
@@ -1353,7 +1480,7 @@
             for(let murid of senaraiTarget) {
                 await tukarMarkah(murid.uid, hantaranNilai, 'PUKAL');
             }
-            await kemaskiniRanking(thn);
+            await kemaskiniRanking(thn, kls);
             alert(`Berjaya dikemaskini secara pukal!`);
         }
     }
@@ -1399,7 +1526,7 @@
                     kaedah: 'RESET_ADMIN', tarikh: getTarikhHariIni(), timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
             }
-            await kemaskiniRanking(thn);
+            await kemaskiniRanking(thn, kls);
             alert(`Markah merit bagi semua murid kelas ${thn} ${kls} telah berjaya diset semula kepada ${nilaiBaru}!`);
         }
     }
@@ -1409,6 +1536,9 @@
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'block';
         document.getElementById('cariUtama').value = "";
+        document.getElementById('cariKelasUtama').value = "";
+        document.getElementById('cariUtama').disabled = true;
+        document.getElementById('statusCarianUtama').innerText = "Sila pilih kelas terlebih dahulu.";
         document.getElementById('cariDisiplin').value = "";
         document.getElementById('hasilCarianDisiplin').innerHTML = "";
         document.getElementById('cetakBorangKawasan').style.display = 'none';
@@ -1447,13 +1577,17 @@
 
         if(!uid || !nama) return alert("Sila isikan UID dan Nama!");
         
+        const rekodLama = databaseMurid.find(m => m.uid === uid);
         await db.ref('pelajar/' + uid).update({ 
             nama: nama, tahun: thn, namaKelas: kls, rmt: isRMT,
             jenisBacaan: jBacaan, jilidIqra: (jBacaan === 'IQRA') ? jilid : "-", mukaSurat: ms
         });
         const snap = await db.ref('pelajar/' + uid + '/markah').once('value');
         if(!snap.exists()) await db.ref('pelajar/' + uid + '/markah').set(0);
-        await kemaskiniRanking(thn);
+        await kemaskiniRanking(thn, kls);
+        if (rekodLama && (String(rekodLama.tahun) !== String(thn) || String(rekodLama.namaKelas) !== String(kls))) {
+            await kemaskiniRanking(rekodLama.tahun, rekodLama.namaKelas);
+        }
         alert("Berjaya disimpan!");
         tutupForm();
     }
@@ -1462,7 +1596,9 @@
         cetusGegar(btn);
         const uid = document.getElementById('regUid').value;
         if(confirm("Anda pasti mahu padam rekod murid ini?")) {
+            const m = databaseMurid.find(x => x.uid === uid);
             await db.ref('pelajar/' + uid).remove();
+            if (m) await kemaskiniRanking(m.tahun, m.namaKelas);
             alert("Telah dipadam.");
             tutupForm();
         }
@@ -1872,28 +2008,49 @@
     function renderMurid() {
         const container = document.getElementById('muridContainer');
         container.innerHTML = "";
-        let list = databaseMurid.filter(m => m.tahun == curTahun && m.namaKelas == curKelas);
-        list.sort((a,b) => a.nama.localeCompare(b.nama));
 
-        list.forEach(m => {
+        let list = databaseMurid.filter(m =>
+            String(m.tahun) === String(curTahun) &&
+            String(m.namaKelas || '').toUpperCase() === String(curKelas || '').toUpperCase()
+        );
+
+        list.sort((a,b) =>
+            Number(b.markah || 0) - Number(a.markah || 0) ||
+            String(a.nama || '').localeCompare(String(b.nama || ''), 'ms')
+        );
+
+        if (!list.length) {
+            container.innerHTML = '<div class="murid-item" style="text-align:center;color:var(--gray-600);">Tiada murid berdaftar dalam kelas ini.</div>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="merit-sort-note">🏆 Senarai disusun automatik mengikut <b>merit tertinggi → terendah</b>. Kedudukan akan berubah selepas setiap kemas kini merit.</div>
+        `;
+
+        list.forEach((m, index) => {
             const j = m.jenisBacaan || 'IQRA';
             const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
             const ms = m.mukaSurat || '1';
+            const rankClass = index < 3 ? ` top${index+1}` : '';
 
             container.innerHTML += `
             <div class="murid-item">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <div>
-                        <b>${escapeHtml(m.nama)}</b><br>
-                        <small style="color:var(--gray-600)">UID: ${escapeHtml(m.uid)}</small><br>
-                        <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
+                <div class="ranking-header">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                        <div class="ranking-number${rankClass}">${index + 1}</div>
+                        <div style="min-width:0;">
+                            <b style="display:block;word-break:break-word;">${escapeHtml(m.nama)}</b>
+                            <small style="color:var(--gray-600)">UID: ${escapeHtml(m.uid)}</small><br>
+                            <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
+                        </div>
                     </div>
-                    <span class="badge-skor">${m.markah || 0}</span>
+                    <span class="badge-skor">${Number(m.markah || 0)}</span>
                 </div>
                 <div style="display:flex; gap:8px;">
-                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
-                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${m.uid}', -5)">-5 MERIT</button>
-                    <button class="btn-aksi" style="background:var(--dark); max-width:60px;" onclick="editMurid('${m.uid}')">✏️</button>
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${escapeHtml(m.uid)}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${escapeHtml(m.uid)}', -5)">-5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--dark); max-width:60px;" onclick="editMurid('${escapeHtml(m.uid)}')">✏️</button>
                 </div>
             </div>`;
         });
@@ -1914,35 +2071,87 @@
         document.getElementById('formView').style.display = 'block';
     }
 
+    function tukarKelasCarian(value) {
+        const input = document.getElementById('cariUtama');
+        const status = document.getElementById('statusCarianUtama');
+
+        input.value = '';
+        if (!value) {
+            input.disabled = true;
+            status.innerText = 'Sila pilih kelas terlebih dahulu.';
+            kembali();
+            return;
+        }
+
+        const [tahun, kelas] = value.split('|');
+        curTahun = tahun;
+        curKelas = kelas;
+        input.disabled = false;
+        status.innerText = `Carian dihadkan kepada Tahun ${tahun} ${kelas}.`;
+        logikCarian('');
+    }
+
     function logikCarian(val) {
-        if(!val) { kembali(); return; }
+        const pilihan = document.getElementById('cariKelasUtama').value;
+        const container = document.getElementById('muridContainer');
+
+        if (!pilihan) {
+            document.getElementById('cariUtama').value = '';
+            document.getElementById('cariUtama').disabled = true;
+            document.getElementById('statusCarianUtama').innerText = 'Sila pilih kelas terlebih dahulu.';
+            return;
+        }
+
+        const [tahun, kelas] = pilihan.split('|');
+        curTahun = tahun;
+        curKelas = kelas;
+
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'none';
         document.getElementById('senaraiView').style.display = 'block';
-        document.getElementById('labelKelas').innerText = "HASIL CARIAN";
+        document.getElementById('labelKelas').innerText = `CARIAN: TAHUN ${tahun} ${kelas}`;
 
-        const container = document.getElementById('muridContainer');
-        container.innerHTML = "";
-        let list = databaseMurid.filter(m => m.nama.includes(val.toUpperCase()));
+        const q = String(val || '').toUpperCase().trim();
+        let list = databaseMurid.filter(m =>
+            String(m.tahun) === String(tahun) &&
+            String(m.namaKelas || '').toUpperCase() === String(kelas).toUpperCase() &&
+            (!q || String(m.nama || '').toUpperCase().includes(q))
+        );
 
-        list.forEach(m => {
+        list.sort((a,b) =>
+            Number(b.markah || 0) - Number(a.markah || 0) ||
+            String(a.nama || '').localeCompare(String(b.nama || ''), 'ms')
+        );
+
+        container.innerHTML = `
+            <div class="merit-sort-note">🔎 Carian hanya dalam <b>Tahun ${tahun} ${kelas}</b>. Senarai kekal mengikut merit tertinggi.</div>
+        `;
+
+        if (!list.length) {
+            container.innerHTML += '<div class="murid-item" style="text-align:center;color:var(--gray-600);">Tiada murid sepadan dengan carian.</div>';
+            return;
+        }
+
+        list.forEach((m, index) => {
             const j = m.jenisBacaan || 'IQRA';
             const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
             const ms = m.mukaSurat || '1';
-
             container.innerHTML += `
             <div class="murid-item">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <div>
-                        <b>${escapeHtml(m.nama)}</b><br>
-                        <small style="color:var(--gray-600)">TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</small><br>
-                        <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="ranking-number">${index + 1}</div>
+                        <div>
+                            <b>${escapeHtml(m.nama)}</b><br>
+                            <span class="badge-bacaan ${j==='ALQURAN'?'badge-quran':'badge-iqra'}">${jilid} (M/S ${ms})</span>
+                        </div>
                     </div>
-                    <span class="badge-skor">${m.markah || 0}</span>
+                    <span class="badge-skor">${Number(m.markah || 0)}</span>
                 </div>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
-                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${m.uid}', -5)">-5 MERIT</button>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${escapeHtml(m.uid)}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="tukarMarkah('${escapeHtml(m.uid)}', -5)">-5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--dark);max-width:60px;" onclick="editMurid('${escapeHtml(m.uid)}')">✏️</button>
                 </div>
             </div>`;
         });
@@ -2056,7 +2265,13 @@
             }
         }
         if(document.getElementById('senaraiView').style.display === 'block' && curTahun && curKelas) {
-            renderMurid();
+            const searchInput = document.getElementById('cariUtama');
+            const searchClass = document.getElementById('cariKelasUtama')?.value || '';
+            if (searchClass && searchClass === `${curTahun}|${curKelas}`) {
+                logikCarian(searchInput?.value || '');
+            } else {
+                renderMurid();
+            }
         }
         if(document.getElementById('bacaanView').style.display === 'block') {
             renderSenaraiBacaan();
@@ -2086,6 +2301,7 @@
 
     // Inisialisasi Aplikasi
     binaGridKelas();
+    binaGridKelasKR();
     muatKonfigurasiAkses();
 </script>
 </body>
