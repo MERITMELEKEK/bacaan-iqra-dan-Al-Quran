@@ -443,6 +443,12 @@
                     <input type="number" id="nfcMukaSurat" placeholder="M/S (Muka Surat)" min="1" style="margin-bottom:0; flex:1;">
                     <button class="btn-aksi" style="background:var(--purple); flex:1;" onclick="simpanBacaanGlobalNfc()">SIMPAN BACAAN</button>
                 </div>
+
+                <div id="gNfcRekodRumahBox" style="margin-top:12px; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:10px;">
+                    <div style="font-size:0.75rem; font-weight:800; color:#9a3412;">🏠 REKOD BACAAN DI RUMAH</div>
+                    <div id="gNfcRekodRumahText" style="font-size:0.82rem; font-weight:700; margin-top:4px; color:#7c2d12;">Belum ada rekod rumah.</div>
+                    <div id="gNfcRekodRumahInfo" style="font-size:0.68rem; margin-top:3px; color:#9a3412;"></div>
+                </div>
             </div>
         </div>
         
@@ -611,7 +617,7 @@
     <div id="bacaanView" class="view-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
-            <h3 style="margin:0; color:var(--teal)">PAPAN BACAAN IQRA' & AL-QURAN</h3>
+            <h3 style="margin:0; color:var(--teal)">PAPAN BACAAN IQRA' & AL-QURAN</h3><div style="font-size:0.65rem;color:#64748b;margin-left:10px;">🔒 Rekod rasmi guru</div>
         </div>
         
         <div style="display:flex; gap:10px; margin-bottom:15px;">
@@ -1365,9 +1371,10 @@
             document.getElementById('gNfcBorangDaftar').style.display = 'none';
 
             // Masukkan data rekod bacaan sedia ada murid
-            const jBacaan = m.jenisBacaan || 'IQRA';
-            const jilid = m.jilidIqra || '1';
-            const ms = m.mukaSurat || '1';
+            const rb = rekodGuruBacaan(m);
+            const jBacaan = rb.jenisBacaan || 'IQRA';
+            const jilid = rb.jilidIqra || '1';
+            const ms = rb.mukaSurat || '1';
 
             document.getElementById('nfcJenisBacaan').value = jBacaan;
             document.getElementById('nfcJilidIqra').value = jilid;
@@ -1376,12 +1383,20 @@
             tukarModBacaanNfc();
             kemaskiniBadgeBacaanPopup(jBacaan, jilid, ms);
 
+            const rbRumah = rekodRumahBacaan(m);
+            document.getElementById('gNfcRekodRumahText').innerText = rbRumah ? formatBacaan(rbRumah) : 'Belum ada rekod rumah.';
+            document.getElementById('gNfcRekodRumahInfo').innerText = m.rumahBacaan
+                ? 'Dikemaskini oleh ibu bapa/waris. Rekod ini berasingan daripada rekod guru.'
+                : 'Belum disimpan oleh ibu bapa/waris — sementara mengikut rekod guru semasa.';
+
             db.ref('kehadiran/' + getTarikhHariIni() + '/' + uid).set(true);
         } else {
             document.getElementById('gNfcIcon').innerText = "⚠️";
             document.getElementById('gNfcNama').innerText = "KAD BARU DIKESAN";
             document.getElementById('gNfcKelas').innerText = "ID Slaid: " + uid;
             document.getElementById('gNfcScoreBox').style.display = 'none';
+            document.getElementById('gNfcRekodRumahText').innerText = 'Belum ada rekod rumah.';
+            document.getElementById('gNfcRekodRumahInfo').innerText = '';
             document.getElementById('gRegUid').value = uid;
             document.getElementById('gRegNama').value = "";
             document.getElementById('gNfcBorangDaftar').style.display = 'block';
@@ -1417,10 +1432,14 @@
 
         if(!ms || ms <= 0) return alert("Sila masukkan nombor muka surat yang sah!");
 
-        await db.ref('pelajar/' + globalScanUid).update({
+        await db.ref('pelajar/' + globalScanUid + '/guruBacaan').set({
             jenisBacaan: jBacaan,
             jilidIqra: (jBacaan === 'IQRA') ? jilid : "-",
-            mukaSurat: ms
+            mukaSurat: Number(ms),
+            guruToken: (currentGuru && currentGuru.token) || 'ADMIN',
+            guruId: (currentGuru && currentGuru.id) || 'ADMIN',
+            guruNama: getActorName(),
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
         });
 
         cetusGegar(document.getElementById('modalNfc'));
@@ -1452,7 +1471,7 @@
 
         await db.ref('pelajar/' + uid).update({ 
             nama: nama, tahun: thn, namaKelas: kls, rmt: false,
-            jenisBacaan: "IQRA", jilidIqra: "1", mukaSurat: 1 
+            guruBacaan: { jenisBacaan: "IQRA", jilidIqra: "1", mukaSurat: 1, guruToken: (currentGuru && currentGuru.token) || 'ADMIN', guruId: (currentGuru && currentGuru.id) || 'ADMIN', guruNama: getActorName(), updatedAt: firebase.database.ServerValue.TIMESTAMP }
         });
         await db.ref('pelajar/' + uid + '/markah').set(0);
         await kemaskiniRanking(thn, kls);
@@ -1580,7 +1599,12 @@
         const rekodLama = databaseMurid.find(m => m.uid === uid);
         await db.ref('pelajar/' + uid).update({ 
             nama: nama, tahun: thn, namaKelas: kls, rmt: isRMT,
-            jenisBacaan: jBacaan, jilidIqra: (jBacaan === 'IQRA') ? jilid : "-", mukaSurat: ms
+            guruBacaan: {
+                jenisBacaan: jBacaan, jilidIqra: (jBacaan === 'IQRA') ? jilid : "-", mukaSurat: Number(ms),
+                guruToken: (currentGuru && currentGuru.token) || 'ADMIN',
+                guruId: (currentGuru && currentGuru.id) || 'ADMIN',
+                guruNama: getActorName(), updatedAt: firebase.database.ServerValue.TIMESTAMP
+            }
         });
         const snap = await db.ref('pelajar/' + uid + '/markah').once('value');
         if(!snap.exists()) await db.ref('pelajar/' + uid + '/markah').set(0);
@@ -1612,6 +1636,33 @@
         renderSenaraiBacaan();
     }
 
+    // ==================== REKOD BACAAN BERASINGAN ====================
+    // guruBacaan = rekod rasmi guru (hanya modul guru menulis)
+    // rumahBacaan = rekod bacaan di rumah (ibubapa menulis, tidak mengubah guruBacaan)
+    function rekodGuruBacaan(m) {
+        if (m && m.guruBacaan) return m.guruBacaan;
+        // Keserasian data lama: rekod lama dianggap sebagai rekod guru.
+        return {
+            jenisBacaan: (m && m.jenisBacaan) || 'IQRA',
+            jilidIqra: (m && m.jilidIqra) || '1',
+            mukaSurat: (m && m.mukaSurat) || 1
+        };
+    }
+
+    function rekodRumahBacaan(m) {
+        if (m && m.rumahBacaan) return m.rumahBacaan;
+        // Jika ibubapa belum menyimpan rekod rumah, paparan rumah mengikut rekod guru semasa.
+        const guru = rekodGuruBacaan(m);
+        return guru ? { ...guru, sumberAwal: 'GURU_SEMASA', sementara: true } : null;
+    }
+
+    function formatBacaan(b) {
+        const j = (b && b.jenisBacaan) || 'IQRA';
+        const jilid = b && b.jilidIqra ? b.jilidIqra : '1';
+        const ms = b && b.mukaSurat ? b.mukaSurat : 1;
+        return j === 'ALQURAN' ? `AL-QURAN (M/S ${ms})` : `IQRA' ${jilid} (M/S ${ms})`;
+    }
+
     function renderSenaraiBacaan() {
         const thn = document.getElementById('selTahunBacaan').value;
         const kls = document.getElementById('selKelasBacaan').value;
@@ -1619,51 +1670,46 @@
         container.innerHTML = "";
 
         let listMurid = databaseMurid.filter(m => m.tahun == thn && m.namaKelas == kls);
-        listMurid.sort((a,b) => a.nama.localeCompare(b.nama));
+        listMurid.sort((a,b) => a.nama.localeCompare(b.nama, 'ms'));
 
         let totalIqra = 0, totalQuran = 0;
-
         listMurid.forEach(m => {
-            const jenis = m.jenisBacaan || 'IQRA';
-            const jilid = m.jilidIqra || '1';
-            const ms = m.mukaSurat || '1';
-
-            if(jenis === 'ALQURAN') totalQuran++;
-            else totalIqra++;
-
-            const badgeHTML = (jenis === 'ALQURAN') 
-                ? `<span class="badge-bacaan badge-quran">🟢 AL-QURAN (M/S ${ms})</span>` 
+            const b = rekodGuruBacaan(m);
+            const jenis = b.jenisBacaan || 'IQRA';
+            const jilid = b.jilidIqra || '1';
+            const ms = b.mukaSurat || '1';
+            if(jenis === 'ALQURAN') totalQuran++; else totalIqra++;
+            const badgeHTML = (jenis === 'ALQURAN')
+                ? `<span class="badge-bacaan badge-quran">🟢 AL-QURAN (M/S ${ms})</span>`
                 : `<span class="badge-bacaan badge-iqra">📖 IQRA' ${jilid} (M/S ${ms})</span>`;
 
             container.innerHTML += `
             <div class="murid-item" style="padding:15px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <b>${escapeHtml(m.nama)}</b><br>
-                        ${badgeHTML}
+                    <div style="width:100%;"><b>${escapeHtml(m.nama)}</b><br>${badgeHTML}
+                    <div style="font-size:0.68rem;color:#64748b;margin-top:5px;">🔒 Rekod rasmi guru — murid/waris hanya boleh melihat</div>
+                    <div style="margin-top:10px; background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:10px;">
+                        <div style="font-size:0.7rem;font-weight:800;color:#9a3412;">🏠 REKOD BACAAN DI RUMAH</div>
+                        <div style="font-size:0.85rem;font-weight:800;color:#7c2d12;margin-top:3px;">${formatBacaan(rekodRumahBacaan(m))}</div>
+                        <div style="font-size:0.65rem;color:#9a3412;margin-top:3px;">${m.rumahBacaan ? 'Dikemaskini oleh ibu bapa/waris' : 'Belum diubah oleh ibu bapa — mengikut rekod guru semasa'}</div>
+                    </div>
                     </div>
                 </div>
-                <div style="display:flex; gap:8px; margin-top:12px; align-items:center;">
+                <div style="display:flex; gap:8px; margin-top:12px; align-items:center; flex-wrap:wrap;">
                     <select id="itemJenis-${m.uid}" onchange="tukarModInline('${m.uid}')" style="margin-bottom:0; font-size:0.8rem; padding:8px 10px;">
                         <option value="IQRA" ${jenis==='IQRA'?'selected':''}>IQRA'</option>
                         <option value="ALQURAN" ${jenis==='ALQURAN'?'selected':''}>AL-QURAN</option>
                     </select>
-
                     <select id="itemJilid-${m.uid}" style="margin-bottom:0; font-size:0.8rem; padding:8px 10px; display:${jenis==='ALQURAN'?'none':'block'};">
-                        <option value="1" ${jilid==='1'?'selected':''}>Iqra 1</option>
-                        <option value="2" ${jilid==='2'?'selected':''}>Iqra 2</option>
-                        <option value="3" ${jilid==='3'?'selected':''}>Iqra 3</option>
-                        <option value="4" ${jilid==='4'?'selected':''}>Iqra 4</option>
-                        <option value="5" ${jilid==='5'?'selected':''}>Iqra 5</option>
-                        <option value="6" ${jilid==='6'?'selected':''}>Iqra 6</option>
+                        <option value="1" ${jilid==='1'?'selected':''}>Iqra 1</option><option value="2" ${jilid==='2'?'selected':''}>Iqra 2</option>
+                        <option value="3" ${jilid==='3'?'selected':''}>Iqra 3</option><option value="4" ${jilid==='4'?'selected':''}>Iqra 4</option>
+                        <option value="5" ${jilid==='5'?'selected':''}>Iqra 5</option><option value="6" ${jilid==='6'?'selected':''}>Iqra 6</option>
                     </select>
-
                     <input type="number" id="itemMs-${m.uid}" value="${ms}" placeholder="M/S" min="1" style="margin-bottom:0; font-size:0.8rem; padding:8px 10px; width:70px;">
-                    <button class="btn-aksi" style="background:var(--purple); padding:8px 12px; font-size:0.8rem;" onclick="simpanBacaanInline('${m.uid}')">💾</button>
+                    <button class="btn-aksi" style="background:var(--purple); padding:8px 12px; font-size:0.8rem;" onclick="simpanBacaanInline('${m.uid}')">💾 SIMPAN REKOD GURU</button>
                 </div>
             </div>`;
         });
-
         document.getElementById('statJumlahIqra').innerText = totalIqra;
         document.getElementById('statJumlahQuran').innerText = totalQuran;
     }
@@ -1676,16 +1722,21 @@
     async function simpanBacaanInline(uid) {
         const jBacaan = document.getElementById(`itemJenis-${uid}`).value;
         const jilid = document.getElementById(`itemJilid-${uid}`).value;
-        const ms = document.getElementById(`itemMs-${uid}`).value;
-
-        if(!ms || ms <= 0) return alert("Sila masukkan muka surat yang betul.");
-
-        await db.ref('pelajar/' + uid).update({
+        const ms = parseInt(document.getElementById(`itemMs-${uid}`).value, 10);
+        if(!Number.isFinite(ms) || ms < 1) return alert("Sila masukkan muka surat yang betul.");
+        const actor = currentGuru || { token:'ADMIN', nama:'PENTADBIR SISTEM', id:'ADMIN' };
+        const guruBacaan = {
             jenisBacaan: jBacaan,
-            jilidIqra: (jBacaan === 'IQRA') ? jilid : "-",
-            mukaSurat: ms
-        });
-        alert("Bacaan murid dikemaskini!");
+            jilidIqra: jBacaan === 'IQRA' ? jilid : '-',
+            mukaSurat: ms,
+            guruToken: actor.token || 'ADMIN',
+            guruId: actor.id || 'ADMIN',
+            guruNama: actor.nama || 'PENTADBIR SISTEM',
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+        await db.ref('pelajar/' + uid + '/guruBacaan').set(guruBacaan);
+        alert("Rekod bacaan GURU berjaya dikemaskini. Rekod bacaan rumah tidak berubah.");
+        renderSenaraiBacaan();
     }
 
     // --- LOGIK MODUL KERJA RUMAH ---
@@ -2029,9 +2080,10 @@
         `;
 
         list.forEach((m, index) => {
-            const j = m.jenisBacaan || 'IQRA';
-            const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
-            const ms = m.mukaSurat || '1';
+            const rb = rekodGuruBacaan(m);
+            const j = rb.jenisBacaan || 'IQRA';
+            const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${rb.jilidIqra || '1'}`;
+            const ms = rb.mukaSurat || '1';
             const rankClass = index < 3 ? ` top${index+1}` : '';
 
             container.innerHTML += `
@@ -2063,9 +2115,10 @@
         document.getElementById('regTahun').value = m.tahun;
         document.getElementById('regKelas').value = m.namaKelas;
         document.getElementById('regRMT').checked = m.rmt === true || m.rmt === "true";
-        document.getElementById('regJenisBacaan').value = m.jenisBacaan || 'IQRA';
-        document.getElementById('regJilidIqra').value = m.jilidIqra || '1';
-        document.getElementById('regMukaSurat').value = m.mukaSurat || '1';
+        const rb = rekodGuruBacaan(m);
+        document.getElementById('regJenisBacaan').value = rb.jenisBacaan || 'IQRA';
+        document.getElementById('regJilidIqra').value = rb.jilidIqra || '1';
+        document.getElementById('regMukaSurat').value = rb.mukaSurat || '1';
         tukarModBacaanForm();
         document.getElementById('btnPadam').style.display = 'block';
         document.getElementById('formView').style.display = 'block';
@@ -2133,9 +2186,10 @@
         }
 
         list.forEach((m, index) => {
-            const j = m.jenisBacaan || 'IQRA';
-            const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
-            const ms = m.mukaSurat || '1';
+            const rb = rekodGuruBacaan(m);
+            const j = rb.jenisBacaan || 'IQRA';
+            const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${rb.jilidIqra || '1'}`;
+            const ms = rb.mukaSurat || '1';
             container.innerHTML += `
             <div class="murid-item">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -2192,9 +2246,10 @@
 
             let html = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:25%">PERINGKAT BACAAN</th><th style="width:15%">MUKA SURAT</th></tr></thead><tbody>`;
             senarai.forEach((m, idx) => {
-                const j = m.jenisBacaan || 'IQRA';
-                const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${m.jilidIqra || '1'}`;
-                const ms = m.mukaSurat || '1';
+                const rb = rekodGuruBacaan(m);
+                const j = rb.jenisBacaan || 'IQRA';
+                const jilid = (j === 'ALQURAN') ? 'AL-QURAN' : `IQRA' ${rb.jilidIqra || '1'}`;
+                const ms = rb.mukaSurat || '1';
                 html += `<tr><td>${idx+1}</td><td><b>${escapeHtml(m.nama)}</b></td><td>TAHUN ${m.tahun} ${escapeHtml(m.namaKelas)}</td><td><b>${jilid}</b></td><td><center>M/S ${ms}</center></td></tr>`;
             });
             html += `</tbody></table>`;
