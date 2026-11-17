@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         :root { 
             --primary: #3b82f6; 
@@ -402,6 +403,20 @@
 </head>
 <body>
 
+<!-- MODAL IMBASAN QR GURU: ALTERNATIF KEPADA NFC -->
+<div id="popupQrGuru" class="overlay" style="z-index:5500;">
+    <div class="modal">
+        <div style="font-size:2.4rem;">📷</div>
+        <h3 style="margin:5px 0;">IMBAS KOD QR KAD MURID</h3>
+        <p style="font-size:.78rem;color:#64748b;margin:0 0 12px;">
+            Halakan kamera ke kod QR pada kad murid. Maklumat murid akan dibuka menggunakan paparan yang sama seperti imbasan NFC.
+        </p>
+        <div id="qrReaderGuru" style="width:100%;"></div>
+        <div id="statusQrGuru" style="font-size:.75rem;color:#475569;margin:10px 0;">Menunggu imbasan kod QR...</div>
+        <button class="btn-aksi" style="background:#ef4444;width:100%;" onclick="hentiImbasQrGuru()">TUTUP / HENTIKAN KAMERA</button>
+    </div>
+</div>
+
 <!-- POPUP IMBASAN KAD NFC GLOBAL (DENGAN KEMASKINI MERIT & BACAAN ALQURAN/IQRA) -->
 <div id="popupNfcGlobal" class="overlay">
     <div class="modal" id="modalNfc">
@@ -567,6 +582,9 @@
         <div class="grid-menu">
             <div id="btnAktifNfc" class="card-btn card-full btn-purple" onclick="aktifkanNfcLatarBelakang()">
                 <span>📡</span> <span>AKTIFKAN IMBASAN KAD NFC</span>
+            </div>
+            <div class="card-btn card-full btn-teal" onclick="mulaImbasQrGuru()">
+                <span>📷</span> <span>IMBAS KOD QR KAD MURID (ALTERNATIF NFC)</span>
             </div>
             <div class="card-btn btn-teal" onclick="bukaBacaan()">
                 <span style="font-size: 1.4rem;">📖</span> <span>REKOD BACAAN</span>
@@ -939,6 +957,8 @@
     let curTahun, curKelas, globalScanUid;
     let curKrTahun = null, curKrKelas = null;
     let nfcReaderInstance = null;
+    let qrScannerGuru = null;
+    let qrGuruSedangMemproses = false;
 
     // ==================== GURU / AUDIT MERIT ====================
     const URL_PARAMS = new URLSearchParams(window.location.search);
@@ -1353,6 +1373,84 @@
             alert("Gagal mengaktifkan penderia NFC.");
             nfcReaderInstance = null;
         }
+    }
+
+    // --- IMBASAN QR GURU: FUNGSI ALTERNATIF KEPADA NFC ---
+    async function mulaImbasQrGuru() {
+        if (!window.Html5Qrcode) {
+            alert('Modul imbasan QR tidak dapat dimuatkan. Semak sambungan internet dan muat semula halaman.');
+            return;
+        }
+
+        const popup = document.getElementById('popupQrGuru');
+        const reader = document.getElementById('qrReaderGuru');
+        const status = document.getElementById('statusQrGuru');
+        popup.style.display = 'flex';
+        status.innerText = 'Memulakan kamera...';
+        qrGuruSedangMemproses = false;
+
+        if (qrScannerGuru) {
+            try { await qrScannerGuru.stop(); } catch(e) {}
+            try { qrScannerGuru.clear(); } catch(e) {}
+            qrScannerGuru = null;
+        }
+
+        reader.innerHTML = '';
+        qrScannerGuru = new Html5Qrcode('qrReaderGuru');
+
+        try {
+            await qrScannerGuru.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 230, height: 230 }, aspectRatio: 1.0 },
+                async decodedText => {
+                    if (qrGuruSedangMemproses) return;
+                    qrGuruSedangMemproses = true;
+
+                    // Kad QR SK Melekek menyimpan UID murid sebagai teks biasa.
+                    const uid = String(decodedText || '').trim().toUpperCase();
+                    status.innerText = 'Kod dikesan. Sedang menyemak rekod murid...';
+
+                    try { await qrScannerGuru.stop(); } catch(e) {}
+                    try { qrScannerGuru.clear(); } catch(e) {}
+                    qrScannerGuru = null;
+                    popup.style.display = 'none';
+                    reader.innerHTML = '';
+
+                    if (!uid) {
+                        qrGuruSedangMemproses = false;
+                        alert('Kod QR kosong atau tidak sah. Sila cuba sekali lagi.');
+                        return;
+                    }
+
+                    // Gunakan aliran pemprosesan yang sama seperti NFC:
+                    // paparan merit, rekod bacaan dan pendaftaran kad baharu.
+                    globalScanUid = uid;
+                    prosesImpakKadGlobal(uid);
+                    qrGuruSedangMemproses = false;
+                },
+                errorMessage => {
+                    // Ralat bacaan sementara ketika kamera mencari kod QR diabaikan.
+                }
+            );
+            status.innerText = 'Kamera aktif. Halakan kamera ke kod QR pada kad murid.';
+        } catch(e) {
+            status.innerText = 'Kamera tidak dapat diakses.';
+            try { if (qrScannerGuru) await qrScannerGuru.stop(); } catch(err) {}
+            try { if (qrScannerGuru) qrScannerGuru.clear(); } catch(err) {}
+            qrScannerGuru = null;
+            alert('Tidak dapat membuka kamera. Benarkan akses kamera dan pastikan pautan dibuka melalui HTTPS.');
+        }
+    }
+
+    async function hentiImbasQrGuru() {
+        if (qrScannerGuru) {
+            try { await qrScannerGuru.stop(); } catch(e) {}
+            try { qrScannerGuru.clear(); } catch(e) {}
+            qrScannerGuru = null;
+        }
+        qrGuruSedangMemproses = false;
+        document.getElementById('qrReaderGuru').innerHTML = '';
+        document.getElementById('popupQrGuru').style.display = 'none';
     }
 
     // --- LOGIK POPUP SCAN KAD NFC (DENGAN REKOD BACAAN) ---
