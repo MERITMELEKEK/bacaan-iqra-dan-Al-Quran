@@ -793,7 +793,9 @@
                 <button id="cepatModeTolak" class="btn-aksi" style="background:#cbd5e1; color:#334155;" onclick="setModeMeritCepat(-1)">− TOLAK</button>
             </div>
             <input id="jumlahMeritCepat" type="number" min="1" step="1" value="5" inputmode="numeric" placeholder="Jumlah merit" style="width:100%; margin:12px 0 10px; padding:16px 18px; border-radius:16px; border:1px solid #c4b5fd; box-sizing:border-box; font-size:1.3rem; font-weight:800; text-align:center;">
-            <button id="btnMulaMeritCepat" class="btn-aksi" style="background:var(--purple); width:100%;" onclick="mulaMeritCepat()">📡 MULA IMBASAN BERTERUSAN</button>
+            <button id="btnMulaMeritCepat" class="btn-aksi" style="background:var(--purple); width:100%;" onclick="mulaMeritCepat()">📡 MULA IMBASAN NFC BERTERUSAN</button>
+            <button id="btnMulaQrMeritCepat" class="btn-aksi" style="background:#0f766e; width:100%; margin-top:9px;" onclick="mulaImbasQrMeritCepat()">📷 MULA IMBASAN QR BERTERUSAN</button>
+            <div id="qrReaderMeritCepat" style="display:none; width:100%; margin-top:12px; background:#fff; border-radius:14px; overflow:hidden;"></div>
             <div id="statusMeritCepat" style="margin-top:12px; padding:12px; background:#fff; border-radius:14px; text-align:center; font-size:.8rem; font-weight:800; color:#475569;">Belum bermula.</div>
         </div>
         <div id="hasilMeritCepat" style="background:#fff; padding:20px; border-radius:24px; border:1px solid #e2e8f0; text-align:center; min-height:130px;">
@@ -959,6 +961,8 @@
     let nfcReaderInstance = null;
     let qrScannerGuru = null;
     let qrGuruSedangMemproses = false;
+    let qrScannerMeritCepat = null;
+    let qrMeritCepatSedangMemproses = false;
 
     // ==================== GURU / AUDIT MERIT ====================
     const URL_PARAMS = new URLSearchParams(window.location.search);
@@ -1316,18 +1320,7 @@
             nfcReaderInstance.onreading = async event => {
                 if(!meritCepatAktif) return;
                 const uid = (event.serialNumber||'').replace(/:/g,'').toUpperCase();
-                const now = Date.now();
-                if(uid && uid===lastQuickScanUid && now-lastQuickScanTime<1200) return;
-                lastQuickScanUid=uid; lastQuickScanTime=now;
-                const pts = meritCepatTanda * jumlah;
-                const m = databaseMurid.find(x=>x.uid===uid);
-                const hasil = document.getElementById('hasilMeritCepat');
-                if(!m) {
-                    hasil.innerHTML=`<div style="font-size:2.3rem">⚠️</div><b>KAD TIDAK BERDAFTAR</b><div style="font-size:.78rem;margin-top:6px">UID: ${escapeHtml(uid)}</div>`;
-                    return;
-                }
-                const berjaya = await tukarMarkah(uid, pts, 'MERIT_CEPAT');
-                hasil.innerHTML=`<div style="font-size:2.4rem">✅</div><b style="font-size:1.15rem">${escapeHtml(m.nama)}</b><div style="margin-top:6px;color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</div><div style="font-size:2rem;font-weight:800;color:${pts>0?'var(--success)':'var(--danger)'};margin:10px 0">${pts>0?'+':''}${pts}</div><div style="font-size:.8rem">Markah baharu: <b>${Number(m.markah||0)+pts}</b></div>`;
+                await prosesImbasanMeritCepat(uid, 'NFC');
             };
         } catch(e) {
             meritCepatAktif=false;
@@ -1335,12 +1328,104 @@
         }
     }
 
+    async function prosesImbasanMeritCepat(uidAsal, kaedah = 'QR') {
+        if (!meritCepatAktif) return;
+        const uid = String(uidAsal || '').trim().replace(/:/g, '').toUpperCase();
+        const now = Date.now();
+        if (!uid) return;
+        if (uid === lastQuickScanUid && now - lastQuickScanTime < 1200) return;
+        lastQuickScanUid = uid;
+        lastQuickScanTime = now;
+
+        const jumlah = parseInt(document.getElementById('jumlahMeritCepat').value, 10);
+        if (!jumlah || jumlah <= 0) {
+            document.getElementById('statusMeritCepat').innerText = 'Masukkan jumlah merit yang sah.';
+            return;
+        }
+
+        const pts = meritCepatTanda * jumlah;
+        const m = databaseMurid.find(x => String(x.uid || '').replace(/:/g, '').toUpperCase() === uid);
+        const hasil = document.getElementById('hasilMeritCepat');
+
+        if (!m) {
+            hasil.innerHTML = `<div style="font-size:2.3rem">⚠️</div><b>KAD TIDAK BERDAFTAR</b><div style="font-size:.78rem;margin-top:6px">UID: ${escapeHtml(uid)}</div><div style="font-size:.7rem;color:#64748b;margin-top:4px">Kaedah: ${kaedah}</div>`;
+            return;
+        }
+
+        const markahLama = Number(m.markah || 0);
+        const berjaya = await tukarMarkah(uid, pts, 'MERIT_CEPAT');
+        if (berjaya === false) {
+            hasil.innerHTML = `<div style="font-size:2.3rem">❌</div><b>GAGAL KEMASKINI MERIT</b><div style="margin-top:6px">${escapeHtml(m.nama)}</div>`;
+            return;
+        }
+
+        hasil.innerHTML = `<div style="font-size:2.4rem">✅</div><b style="font-size:1.15rem">${escapeHtml(m.nama)}</b><div style="margin-top:6px;color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</div><div style="font-size:2rem;font-weight:800;color:${pts>0?'var(--success)':'var(--danger)'};margin:10px 0">${pts>0?'+':''}${pts}</div><div style="font-size:.8rem">Markah baharu: <b>${markahLama + pts}</b></div><div style="font-size:.7rem;color:#64748b;margin-top:5px">Diimbas melalui ${kaedah}</div>`;
+    }
+
+    async function mulaImbasQrMeritCepat() {
+        if (meritCepatAktif) return;
+        if (!window.Html5Qrcode) {
+            alert('Modul imbasan QR tidak dapat dimuatkan. Semak sambungan internet dan muat semula halaman.');
+            return;
+        }
+
+        const jumlah = parseInt(document.getElementById('jumlahMeritCepat').value, 10);
+        if (!jumlah || jumlah <= 0) return alert('Masukkan jumlah merit yang sah.');
+
+        const reader = document.getElementById('qrReaderMeritCepat');
+        const status = document.getElementById('statusMeritCepat');
+        reader.style.display = 'block';
+        reader.innerHTML = '';
+        qrMeritCepatSedangMemproses = false;
+        qrScannerMeritCepat = new Html5Qrcode('qrReaderMeritCepat');
+
+        try {
+            await qrScannerMeritCepat.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 230, height: 230 }, aspectRatio: 1.0 },
+                async decodedText => {
+                    if (qrMeritCepatSedangMemproses || !meritCepatAktif) return;
+                    qrMeritCepatSedangMemproses = true;
+                    await prosesImbasanMeritCepat(decodedText, 'QR');
+                    qrMeritCepatSedangMemproses = false;
+                },
+                () => {}
+            );
+
+            meritCepatAktif = true;
+            await aktifkanWakeLock();
+            status.innerText = `📷 QR AKTIF — setiap kod QR akan ${meritCepatTanda===1?'DITAMBAH':'DITOLAK'} ${jumlah} merit.`;
+            document.getElementById('btnMulaQrMeritCepat').innerText = '✅ IMBASAN QR BERTERUSAN AKTIF';
+        } catch (e) {
+            meritCepatAktif = false;
+            reader.style.display = 'none';
+            try { if (qrScannerMeritCepat) await qrScannerMeritCepat.stop(); } catch(err) {}
+            try { if (qrScannerMeritCepat) qrScannerMeritCepat.clear(); } catch(err) {}
+            qrScannerMeritCepat = null;
+            alert('Kamera tidak dapat dibuka. Benarkan akses kamera dan pastikan portal dibuka melalui HTTPS.');
+        }
+    }
+
     async function hentiMeritCepat() {
-        meritCepatAktif=false;
+        meritCepatAktif = false;
         await lepaskanWakeLock();
-        document.getElementById('statusMeritCepat').innerText='Imbasan dihentikan.';
-        document.getElementById('btnMulaMeritCepat').innerText='📡 MULA IMBASAN BERTERUSAN';
-        if(!currentGuru) kembali(); else kembali();
+
+        if (qrScannerMeritCepat) {
+            try { await qrScannerMeritCepat.stop(); } catch(e) {}
+            try { qrScannerMeritCepat.clear(); } catch(e) {}
+            qrScannerMeritCepat = null;
+        }
+        qrMeritCepatSedangMemproses = false;
+
+        const qrReader = document.getElementById('qrReaderMeritCepat');
+        if (qrReader) {
+            qrReader.innerHTML = '';
+            qrReader.style.display = 'none';
+        }
+        document.getElementById('statusMeritCepat').innerText = 'Imbasan dihentikan.';
+        document.getElementById('btnMulaMeritCepat').innerText = '📡 MULA IMBASAN NFC BERTERUSAN';
+        document.getElementById('btnMulaQrMeritCepat').innerText = '📷 MULA IMBASAN QR BERTERUSAN';
+        kembali();
     }
 
     document.addEventListener('visibilitychange', async ()=>{
